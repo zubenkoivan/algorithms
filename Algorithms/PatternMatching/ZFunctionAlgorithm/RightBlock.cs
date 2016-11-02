@@ -17,10 +17,12 @@
 
         public void Update(int newLeftBorder, int newLength)
         {
-            if (rightBorder <= newLeftBorder + newLength - 1)
+            int newRightBorder = newLeftBorder + newLength - 1;
+
+            if (rightBorder <= newRightBorder)
             {
                 LeftBorder = newLeftBorder;
-                rightBorder = newLeftBorder + newLength - 1;
+                rightBorder = newRightBorder;
                 Length = newLength;
             }
         }

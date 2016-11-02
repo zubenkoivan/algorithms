@@ -2,15 +2,13 @@
 {
     internal class RightBlock
     {
-        private int leftBorder = -1;
         private int rightBorder = -1;
-        private int length;
 
-        public int LeftBorder => leftBorder;
+        public int LeftBorder { get; private set; } = -1;
 
         public int NextIndex => rightBorder + 1;
 
-        public int Length => length;
+        public int Length { get; private set; }
 
         public bool Covers(int index)
         {
@@ -21,9 +19,9 @@
         {
             if (rightBorder <= newLeftBorder + newLength - 1)
             {
-                leftBorder = newLeftBorder;
+                LeftBorder = newLeftBorder;
                 rightBorder = newLeftBorder + newLength - 1;
-                length = newLength;
+                Length = newLength;
             }
         }
 

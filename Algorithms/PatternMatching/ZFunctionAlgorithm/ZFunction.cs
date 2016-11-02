@@ -6,13 +6,13 @@ namespace Algorithms.PatternMatching.ZFunctionAlgorithm
     internal class ZFunction
     {
         private readonly string pattern;
+        private readonly int patternLength;
         private readonly int[] zFunction;
-
-        public int PatternIndex = -1;
 
         public ZFunction(string pattern)
         {
             this.pattern = pattern;
+            patternLength = pattern.Length;
             zFunction = new int[pattern.Length];
 
             int index = 1;
@@ -51,7 +51,7 @@ namespace Algorithms.PatternMatching.ZFunctionAlgorithm
 
                 rightBlock.Update(i, matchLength);
 
-                yield return rightBlock.Length;
+                yield return matchLength;
             }
         }
 
@@ -59,7 +59,7 @@ namespace Algorithms.PatternMatching.ZFunctionAlgorithm
         {
             int result = 0;
 
-            while (patternFrom < pattern.Length && textFrom < text.Length && pattern[patternFrom] == text[textFrom])
+            while (patternFrom < patternLength && textFrom < text.Length && pattern[patternFrom] == text[textFrom])
             {
                 ++result;
                 ++patternFrom;

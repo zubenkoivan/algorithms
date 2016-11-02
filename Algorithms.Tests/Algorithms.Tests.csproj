@@ -80,7 +80,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="PatternMatching.cs" />
+    <Compile Include="PatternMatchingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

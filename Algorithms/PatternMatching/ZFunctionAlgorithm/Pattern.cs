@@ -13,14 +13,9 @@ namespace Algorithms.PatternMatching.ZFunctionAlgorithm
 
         protected override IEnumerable<int> IndexesInImpl(string text)
         {
-            if (string.IsNullOrEmpty(text) || text.Length < PatternLength)
-            {
-                yield break;
-            }
-
             int textIndex = 0;
 
-            foreach (var matchLength in zFunction.Calculate(text))
+            foreach (int matchLength in zFunction.Calculate(text))
             {
                 if (matchLength == PatternLength)
                 {

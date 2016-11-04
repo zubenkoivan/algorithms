@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Algorithms.PatternMatching.AhoCorasickAlgorithm;
 using FluentAssertions;
 using Xunit;
 
@@ -31,6 +32,14 @@ namespace Algorithms.Tests
             IEnumerable<int> actualIndexes = new KnuthMorrisPrattPattern(pattern).IndexesIn(Text);
 
             actualIndexes.ShouldBeEquivalentTo(expectedIndexes);
+        }
+
+        [Fact]
+        public void Should_Find_Patterns_In_Text_With_Aho_Corasick()
+        {
+            IEnumerable<PatternLocation> actualLocations = new PatternsCollection("not to be", "o be, t").LocationsIn(Text);
+
+            actualLocations.ShouldBeEquivalentTo(new[] { new PatternLocation(10, 9), new PatternLocation(15, 7) });
         }
     }
 }

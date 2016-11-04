@@ -41,6 +41,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PatternMatching\AhoCorasickAlgorithm\PatternLocation.cs" />
+    <Compile Include="PatternMatching\AhoCorasickAlgorithm\PatternsCollection.cs" />
+    <Compile Include="PatternMatching\AhoCorasickAlgorithm\Trie.cs" />
+    <Compile Include="PatternMatching\AhoCorasickAlgorithm\TrieNode.cs" />
     <Compile Include="PatternMatching\KnuthMorrisPrattAlgorithm\Pattern.cs" />
     <Compile Include="PatternMatching\KnuthMorrisPrattAlgorithm\PrefixFunction.cs" />
     <Compile Include="PatternMatching\PatternBase.cs" />
@@ -49,6 +53,7 @@
     <Compile Include="PatternMatching\ZFunctionAlgorithm\ZFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -19,7 +19,7 @@
         {
             int newRightBorder = newLeftBorder + newLength - 1;
 
-            if (rightBorder <= newRightBorder)
+            if (rightBorder < newRightBorder)
             {
                 LeftBorder = newLeftBorder;
                 rightBorder = newRightBorder;

@@ -9,34 +9,33 @@ namespace Algorithms.PatternMatching.AhoCorasickAlgorithm
         public Trie(string[] patterns)
         {
             root = new TrieNode(0);
-            CreateTrie(patterns);
+            BuildTrie(patterns);
         }
 
-        private void CreateTrie(string[] patterns)
+        private void BuildTrie(string[] patterns)
         {
-            int trieLevel = 0;
             TrieNode[] previousLevelNodes = CreateNodesArray(patterns.Length, root);
+            int s = 0;
 
-            for (bool canFinish = false; !canFinish;)
+            for (bool isBuilt = false; !isBuilt;)
             {
-                canFinish = true;
+                isBuilt = true;
 
                 for (int i = 0; i < patterns.Length; i++)
                 {
                     string pattern = patterns[i];
 
-                    if (pattern.Length <= trieLevel)
+                    if (pattern.Length <= s)
                     {
                         continue;
                     }
 
-                    canFinish = false;
-
-                    TrieNode nextNode = previousLevelNodes[i].AddNext(pattern[trieLevel], trieLevel == pattern.Length - 1);
+                    isBuilt = false;
+                    TrieNode nextNode = previousLevelNodes[i].AddNext(pattern[s], pattern.Length);
                     previousLevelNodes[i] = nextNode;
                 }
 
-                ++trieLevel;
+                ++s;
             }
         }
 
@@ -66,7 +65,7 @@ namespace Algorithms.PatternMatching.AhoCorasickAlgorithm
                     continue;
                 }
 
-                if (nextNode.Terminal)
+                if (nextNode.IsTerminal)
                 {
                     yield return PatternLocation(i, nextNode);
                 }

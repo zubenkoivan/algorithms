@@ -10,57 +10,35 @@ namespace Algorithms.PatternMatching.AhoCorasickAlgorithm
 
         public TrieNode RollbackTerminalNode { get; private set; }
 
-        public bool Terminal { get; private set; }
+        public bool IsTerminal { get; private set; }
 
         public TrieNode(int level)
         {
             Level = level;
         }
 
-        public TrieNode AddNext(char nextSymbol, bool isTerminal)
+        public TrieNode AddNext(char nextSymbol, int patternLength)
         {
             nextNodes = nextNodes ?? new Dictionary<char, TrieNode>();
-
-            TrieNode nextNode = GetNext(nextSymbol);
-
-            if (nextNode == null)
-            {
-                nextNode = new TrieNode(Level + 1)
-                {
-                    rollbackNode = FindRollbackNode(nextSymbol)
-                };
-                nextNodes.Add(nextSymbol, nextNode);
-                SetRollbackNodes(nextNode, nextSymbol);
-            }
-
-            nextNode.Terminal |= isTerminal;
+            TrieNode nextNode = GetNext(nextSymbol) ?? AddNew(nextSymbol);
+            nextNode.IsTerminal |= nextNode.Level == patternLength;
 
             return nextNode;
         }
 
-        private void SetRollbackNodes(TrieNode nextNode, char nextSymbol)
+        private TrieNode AddNew(char nextSymbol)
         {
-            TrieNode currentNode = this;
-
-            while (currentNode.rollbackNode != null)
+            TrieNode nextRollbackNode = FindRollbackNode(nextSymbol);
+            var nextNode = new TrieNode(Level + 1)
             {
-                TrieNode currentRollbackNode = currentNode.rollbackNode;
-                TrieNode nextRollbackNode = currentRollbackNode.GetNext(nextSymbol);
+                rollbackNode = nextRollbackNode,
+                RollbackTerminalNode = nextRollbackNode.IsTerminal
+                    ? nextRollbackNode
+                    : nextRollbackNode.RollbackTerminalNode
+            };
+            nextNodes.Add(nextSymbol, nextNode);
 
-                if (nextRollbackNode != null)
-                {
-                    nextNode.rollbackNode = nextRollbackNode;
-                    nextNode.RollbackTerminalNode = nextRollbackNode.Terminal
-                        ? nextRollbackNode
-                        : nextRollbackNode.RollbackTerminalNode;
-
-                    return;
-                }
-
-                currentNode = currentRollbackNode;
-            }
-
-            nextNode.rollbackNode = currentNode;
+            return nextNode;
         }
 
         public TrieNode GetNext(char nextSymbol)

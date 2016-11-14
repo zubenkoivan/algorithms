@@ -6,37 +6,62 @@
 
         public SuffixTree(string text)
         {
-            root = new Node(text);
+            root = new Node();
+            root.SaveSuffixLink(root);
             CreateSuffixTree(text);
         }
 
         private void CreateSuffixTree(string text)
         {
-            var currentVertice = new Vertice(root, 0);
+            var currentVertice = new Vertice(root);
 
             for (int i = 0; i < text.Length; i++)
             {
+                Node previousNode = null;
+
                 while (true)
                 {
-                    if (currentVertice.IsLeaf)
+                    if (currentVertice.IsLeaf(i))
                     {
-                        currentVertice = currentVertice.SuffixLink;
+                        currentVertice = currentVertice.SuffixLink(text);
                         continue;
                     }
 
-                    Vertice? vertice = currentVertice.GetNext(text[i]);
+                    Vertice nextVertice = currentVertice.GetNext(text[i]);
 
-                    if (vertice != null)
+                    if (nextVertice != null)
                     {
-                        currentVertice = vertice.Value;
+                        previousNode?.SaveSuffixLink(currentVertice.ExplicitNode);
+                        currentVertice = nextVertice;
                         break;
                     }
 
-                    Vertice suffixLink = currentVertice.SuffixLink;
-                    currentVertice.AddExplicit(text[i], i);
-                    currentVertice = suffixLink;
+                    nextVertice = currentVertice.SuffixLink(text);
+                    Node newNode = currentVertice.AddExplicitly(text, i);
+                    previousNode?.SaveSuffixLink(newNode);
+                    previousNode = newNode;
+                    currentVertice = nextVertice;
                 }
             }
+        }
+
+        public bool HasPattern(string pattern)
+        {
+            var firstEdge = root.GetEdge(pattern[0]);
+
+            if (firstEdge == null)
+            {
+                return false;
+            }
+
+            Vertice vertice = new Vertice(firstEdge, 1);
+
+            for (int i = 1; i < pattern.Length && vertice != null; ++i)
+            {
+                vertice = vertice.GetNext(pattern[i]);
+            }
+
+            return vertice != null;
         }
     }
 }

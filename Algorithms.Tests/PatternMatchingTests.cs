@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Algorithms.PatternMatching.AhoCorasickAlgorithm;
+using Algorithms.PatternMatching.UkkonenAlgorithm;
 using FluentAssertions;
 using Xunit;
 
@@ -40,6 +41,14 @@ namespace Algorithms.Tests
             IEnumerable<PatternLocation> actualLocations = new PatternsCollection("not to be", "o be, t").LocationsIn(Text);
 
             actualLocations.ShouldBeEquivalentTo(new[] { new PatternLocation(10, 9), new PatternLocation(15, 7) });
+        }
+
+        [Fact]
+        public void Should_Check_Text_Has_Pattern_With_Suffix_Tree()
+        {
+            var text = new Text(Text);
+
+            text.HasPattern("not to be").Should().BeTrue();
         }
     }
 }

@@ -1,65 +1,88 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Algorithms.PatternMatching.UkkonenAlgorithm
 {
     internal class Edge
     {
-        private readonly Node start;
-        private readonly Node end;
-        private readonly int startIndex;
-        private readonly int endIndex;
         private readonly string text;
 
-        public Edge(string text, int startIndex)
+        public int StartIndex { get; }
+        public int EndIndex { get; private set; }
+        public Node Start { get; }
+        public Node End { get; private set; }
+
+        public Edge(Node start, string text, int startIndex)
         {
+            if (start == null)
+            {
+                throw new ArgumentNullException(nameof(start));
+            }
+
             if (startIndex < 0 || startIndex >= text.Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(startIndex));
             }
 
             this.text = text;
-            this.startIndex = startIndex;
-            endIndex = int.MaxValue;
+            StartIndex = startIndex;
+            Start = start;
+            EndIndex = -1;
         }
 
-        public bool HasEnd => endIndex != -1;
-
-        public int Length()
+        public override string ToString()
         {
-            return startIndex == -1
-                ? int.MaxValue
-                : endIndex - startIndex + 1;
-        }
-
-        public int Length(int textIndex)
-        {
-            return textIndex - startIndex + 1;
-        }
-
-        public bool Contains(int textIndex)
-        {
-            return startIndex <= textIndex && textIndex <= endIndex;
-        }
-
-        public bool StartsFrom(int textIndex)
-        {
-            return startIndex == textIndex;
-        }
-
-        public TreeVertice GetVerticeWith(int textIndex)
-        {
-            TreeVertice result = null;
-
-            while (true)
+            if (Length == 1)
             {
-                if (textIndex <= endIndex)
-                {
-                    return result;
-                }
-
-                result = nextNodes[text[endIndex + 1]];
+                return StartSymbol.ToString();
             }
+
+            return StartSymbol + "->" + (EndIndex == -1 ? '#' : text[EndIndex]);
+        }
+
+        public char StartSymbol => text[StartIndex];
+
+        public int Length => EndIndex == -1
+            ? int.MaxValue
+            : EndIndex - StartIndex + 1;
+
+        public bool HasSymbol(int activeLength, char symbol)
+        {
+            if (activeLength <= 0 || activeLength >= Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(activeLength));
+            }
+
+            return text[StartIndex + activeLength] == symbol;
+        }
+
+        public Edge NextEdge(char symbol)
+        {
+            return End.GetEdge(symbol);
+        }
+
+        public Node Split(int firstEdgeLength)
+        {
+            if (firstEdgeLength <= 0 || firstEdgeLength >= Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(firstEdgeLength));
+            }
+
+            var newNode = new Node(this);
+            var edge = new Edge(newNode, text, StartIndex + firstEdgeLength)
+            {
+                End = End,
+                EndIndex = EndIndex
+            };
+
+            if (End != null)
+            {
+                End.IncomingEdge = edge;
+            }
+
+            End = edge.Start;
+            EndIndex = edge.StartIndex - 1;
+
+            return newNode;
         }
     }
 }

@@ -48,6 +48,11 @@
     <Compile Include="PatternMatching\KnuthMorrisPrattAlgorithm\Pattern.cs" />
     <Compile Include="PatternMatching\KnuthMorrisPrattAlgorithm\PrefixFunction.cs" />
     <Compile Include="PatternMatching\PatternBase.cs" />
+    <Compile Include="PatternMatching\UkkonenAlgorithm\Edge.cs" />
+    <Compile Include="PatternMatching\UkkonenAlgorithm\Vertice.cs" />
+    <Compile Include="PatternMatching\UkkonenAlgorithm\Node.cs" />
+    <Compile Include="PatternMatching\UkkonenAlgorithm\SuffixTree.cs" />
+    <Compile Include="PatternMatching\UkkonenAlgorithm\Text.cs" />
     <Compile Include="PatternMatching\ZFunctionAlgorithm\Pattern.cs" />
     <Compile Include="PatternMatching\ZFunctionAlgorithm\RightBlock.cs" />
     <Compile Include="PatternMatching\ZFunctionAlgorithm\ZFunction.cs" />

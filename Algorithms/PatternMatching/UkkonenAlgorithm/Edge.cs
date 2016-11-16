@@ -27,12 +27,12 @@ namespace Algorithms.PatternMatching.UkkonenAlgorithm
             this.text = text;
             StartIndex = startIndex;
             Start = start;
-            EndIndex = -1;
+            EndIndex = text.Length - 1;
         }
 
         public char StartSymbol => text[StartIndex];
 
-        public int Length => EndIndex == -1 ? int.MaxValue : EndIndex - StartIndex + 1;
+        public int Length => EndIndex - StartIndex + 1;
 
         public Edge NextEdge(char symbol) => End?.GetEdge(symbol);
 
@@ -59,6 +59,7 @@ namespace Algorithms.PatternMatching.UkkonenAlgorithm
                 End = End,
                 EndIndex = EndIndex
             };
+            newNode.AddEdge(newEdge);
 
             if (End != null)
             {
@@ -78,8 +79,9 @@ namespace Algorithms.PatternMatching.UkkonenAlgorithm
                 return StartSymbol.ToString();
             }
 
-            string end = EndIndex == -1 ? "#" : text[EndIndex].ToString();
-            return $"{Length}: {StartSymbol}->{end}";
+            return Length <= 25
+                ? $"{Length}: '{text.Substring(StartIndex, Length)}'"
+                : $"{Length}: '{text.Substring(StartIndex, 10)}...{text.Substring(text.Length - 10)}'";
         }
     }
 }

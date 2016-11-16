@@ -25,7 +25,7 @@ namespace Algorithms.PatternMatching.UkkonenAlgorithm
                 throw new ArgumentOutOfRangeException(nameof(activeLength));
             }
 
-            startNode = edge.Start;
+            startNode = activeLength == edge.Length ? edge.End : edge.Start;
 
             if (activeLength != edge.Length && activeLength != 0)
             {

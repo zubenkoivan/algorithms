@@ -31,13 +31,13 @@
 
                     if (nextVertice != null)
                     {
-                        previousNode?.SaveSuffixLink(currentVertice.ExplicitNode);
+                        previousNode?.SaveSuffixLink(currentVertice.ExplicitVertice);
                         currentVertice = nextVertice;
                         break;
                     }
 
                     nextVertice = currentVertice.SuffixLink(text);
-                    Node newNode = currentVertice.AddExplicitly(text, i);
+                    Node newNode = currentVertice.AddExplicitVertice(text, i);
                     previousNode?.SaveSuffixLink(newNode);
                     previousNode = newNode;
                     currentVertice = nextVertice;

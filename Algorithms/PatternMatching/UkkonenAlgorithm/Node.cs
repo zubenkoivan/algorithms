@@ -56,5 +56,10 @@ namespace Algorithms.PatternMatching.UkkonenAlgorithm
 
             SuffixLink = suffixLink;
         }
+
+        public override string ToString()
+        {
+            return IsRoot ? "root" : "node";
+        }
     }
 }

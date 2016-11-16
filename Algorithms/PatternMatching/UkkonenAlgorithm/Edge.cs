@@ -6,10 +6,11 @@ namespace Algorithms.PatternMatching.UkkonenAlgorithm
     {
         private readonly string text;
 
-        public int StartIndex { get; }
-        public int EndIndex { get; private set; }
         public Node Start { get; }
-        public Node End { get; private set; }
+        public int StartIndex { get; }
+
+        public int EndIndex { get; private set; }
+        public Node End { private set; get; }
 
         public Edge(Node start, string text, int startIndex)
         {
@@ -29,25 +30,15 @@ namespace Algorithms.PatternMatching.UkkonenAlgorithm
             EndIndex = -1;
         }
 
-        public override string ToString()
-        {
-            if (Length == 1)
-            {
-                return StartSymbol.ToString();
-            }
-
-            return StartSymbol + "->" + (EndIndex == -1 ? '#' : text[EndIndex]);
-        }
-
         public char StartSymbol => text[StartIndex];
 
-        public int Length => EndIndex == -1
-            ? int.MaxValue
-            : EndIndex - StartIndex + 1;
+        public int Length => EndIndex == -1 ? int.MaxValue : EndIndex - StartIndex + 1;
+
+        public Edge NextEdge(char symbol) => End?.GetEdge(symbol);
 
         public bool HasSymbol(int activeLength, char symbol)
         {
-            if (activeLength <= 0 || activeLength >= Length)
+            if (activeLength < 0 || activeLength >= Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(activeLength));
             }
@@ -55,20 +46,15 @@ namespace Algorithms.PatternMatching.UkkonenAlgorithm
             return text[StartIndex + activeLength] == symbol;
         }
 
-        public Edge NextEdge(char symbol)
+        public Node Split(int edgeLength)
         {
-            return End.GetEdge(symbol);
-        }
-
-        public Node Split(int firstEdgeLength)
-        {
-            if (firstEdgeLength <= 0 || firstEdgeLength >= Length)
+            if (edgeLength <= 0 || edgeLength >= Length)
             {
-                throw new ArgumentOutOfRangeException(nameof(firstEdgeLength));
+                throw new ArgumentOutOfRangeException(nameof(edgeLength));
             }
 
             var newNode = new Node(this);
-            var edge = new Edge(newNode, text, StartIndex + firstEdgeLength)
+            var newEdge = new Edge(newNode, text, StartIndex + edgeLength)
             {
                 End = End,
                 EndIndex = EndIndex
@@ -76,13 +62,24 @@ namespace Algorithms.PatternMatching.UkkonenAlgorithm
 
             if (End != null)
             {
-                End.IncomingEdge = edge;
+                End.IncomingEdge = newEdge;
             }
 
-            End = edge.Start;
-            EndIndex = edge.StartIndex - 1;
+            End = newEdge.Start;
+            EndIndex = newEdge.StartIndex - 1;
 
             return newNode;
+        }
+
+        public override string ToString()
+        {
+            if (Length == 1)
+            {
+                return StartSymbol.ToString();
+            }
+
+            string end = EndIndex == -1 ? "#" : text[EndIndex].ToString();
+            return $"{Length}: {StartSymbol}->{end}";
         }
     }
 }

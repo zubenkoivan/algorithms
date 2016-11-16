@@ -79,9 +79,9 @@ namespace Algorithms.PatternMatching.UkkonenAlgorithm
                 return StartSymbol.ToString();
             }
 
-            return Length <= 25
+            return Length <= 50
                 ? $"{Length}: '{text.Substring(StartIndex, Length)}'"
-                : $"{Length}: '{text.Substring(StartIndex, 10)}...{text.Substring(text.Length - 10)}'";
+                : $"{Length}: '{text.Substring(StartIndex, 25)}...{text.Substring(text.Length - 25)}'";
         }
     }
 }

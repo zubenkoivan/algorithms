@@ -59,7 +59,7 @@ namespace Algorithms.PatternMatching.UkkonenAlgorithm
         public Node AddExplicitVertice(string text, int symbolIndex)
         {
             Node node = ExplicitVertice ?? edge.Split(activeLength);
-            node.AddEdge(new Edge(node, text, symbolIndex));
+            node.AddEdge(new Edge(text, node, symbolIndex));
             return node;
         }
 

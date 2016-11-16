@@ -12,7 +12,7 @@ namespace Algorithms.PatternMatching.UkkonenAlgorithm
         public int EndIndex { get; private set; }
         public Node End { private set; get; }
 
-        public Edge(Node start, string text, int startIndex)
+        public Edge(string text, Node start, int startIndex)
         {
             if (start == null)
             {
@@ -54,7 +54,7 @@ namespace Algorithms.PatternMatching.UkkonenAlgorithm
             }
 
             var newNode = new Node(this);
-            var newEdge = new Edge(newNode, text, StartIndex + edgeLength)
+            var newEdge = new Edge(text, newNode, StartIndex + edgeLength)
             {
                 End = End,
                 EndIndex = EndIndex

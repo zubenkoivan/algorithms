@@ -46,7 +46,7 @@ namespace Algorithms.Tests
         [Fact]
         public void Should_Check_Text_Has_Pattern_With_Suffix_Tree()
         {
-            var text = new Text(Text);
+            var text = new SuffixTree(Text);
 
             text.HasPattern("not to be").Should().BeTrue();
         }

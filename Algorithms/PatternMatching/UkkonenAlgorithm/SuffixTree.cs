@@ -1,11 +1,18 @@
-﻿namespace Algorithms.PatternMatching.UkkonenAlgorithm
+﻿using System;
+
+namespace Algorithms.PatternMatching.UkkonenAlgorithm
 {
-    internal class SuffixTree
+    public class SuffixTree
     {
         private readonly Node root;
 
         public SuffixTree(string text)
         {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                throw new ArgumentException(nameof(text));
+            }
+
             root = new Node();
             root.SaveSuffixLink(root);
             CreateSuffixTree(text);
@@ -37,9 +44,9 @@
                     }
 
                     nextVertice = currentVertice.SuffixLink(text);
-                    Node newNode = currentVertice.AddExplicitVertice(text, i);
-                    previousNode?.SaveSuffixLink(newNode);
-                    previousNode = newNode;
+                    Node node = currentVertice.AddExplicitVertice(text, i);
+                    previousNode?.SaveSuffixLink(node);
+                    previousNode = node;
                     currentVertice = nextVertice;
                 }
             }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Algorithms.Sorting;
 
 namespace Algorithms.PatternMatching.SuffixArrays
@@ -41,9 +40,9 @@ namespace Algorithms.PatternMatching.SuffixArrays
 
                 for (int i = 0; i < ranks.Length - length / 2; ++i)
                 {
-                    int index1 = ranks[i];
-                    int index2 = ranks[i + length / 2];
-                    nextLabels[i] = new LabelsPair(i, labels[index1].Label1, labels[index2].Label1);
+                    int half1 = ranks[i];
+                    int half2 = ranks[i + length / 2];
+                    nextLabels[i] = new LabelsPair(i, labels[half1].Label1, labels[half2].Label1);
                 }
 
                 for (int i = ranks.Length - length / 2; i < ranks.Length; ++i)

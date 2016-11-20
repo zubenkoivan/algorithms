@@ -47,8 +47,8 @@ namespace Algorithms.PatternMatching.SuffixArrays
 
                 for (int i = ranks.Length - length / 2; i < ranks.Length; ++i)
                 {
-                    int index1 = ranks[i];
-                    nextLabels[i] = new LabelsPair(i, labels[index1].Label1);
+                    int half1 = ranks[i];
+                    nextLabels[i] = new LabelsPair(i, labels[half1].Label1);
                 }
 
                 Swap(ref labels, ref nextLabels);

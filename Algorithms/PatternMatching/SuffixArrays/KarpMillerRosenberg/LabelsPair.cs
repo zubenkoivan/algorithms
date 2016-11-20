@@ -1,4 +1,4 @@
-﻿namespace Algorithms.PatternMatching.SuffixArrays
+﻿namespace Algorithms.PatternMatching.SuffixArrays.KarpMillerRosenberg
 {
     internal struct LabelsPair
     {

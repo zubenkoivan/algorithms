@@ -1,20 +1,34 @@
 ﻿using System;
+using System.Buffers;
 
 namespace Algorithms.Sorting
 {
     public static class RadixSort
     {
+        private const int Base = 1000;
+        private static readonly ArrayPool<int> NumbersCountsPool = ArrayPool<int>.Create();
+
         public static void Sort<TElement>(TElement[] array, TElement[] buffer, Func<TElement, int> toInt)
         {
-            TElement[] source = array;
-            var digitCounts = new int[10];
-            bool hasDigits = true;
-
-            for (int digitNumber = 0; hasDigits; ++digitNumber)
+            if (buffer.Length != array.Length)
             {
-                hasDigits = CountingSort(source, buffer, toInt, digitCounts, digitNumber);
+                throw new ArgumentException(nameof(buffer), "Buffer array must be of the same size as sorted array");
+            }
+
+            if (toInt == null)
+            {
+                throw new ArgumentNullException(nameof(toInt));
+            }
+
+            TElement[] source = array;
+            int[] numbersCounts = NumbersCountsPool.Rent(Base);
+            bool canContinue = true;
+
+            for (int i = 0; canContinue; ++i)
+            {
+                canContinue = CountingSort(source, buffer, toInt, numbersCounts, i);
                 Swap(ref source, ref buffer);
-                Array.Clear(digitCounts, 0, 10);
+                Array.Clear(numbersCounts, 0, Base);
             }
 
             if (source != array)
@@ -29,32 +43,32 @@ namespace Algorithms.Sorting
         }
 
         private static bool CountingSort<TElement>(TElement[] source, TElement[] dest, Func<TElement, int> toInt,
-            int[] digitCounts, int digitNumber)
+            int[] numbersCounts, int iteration)
         {
-            int m = (int)Math.Pow(10, digitNumber + 1);
-            int n = m / 10;
-            bool hasDigits = false;
+            int m = (int)Math.Pow(Base, iteration + 1);
+            int n = m / Base;
+            int maxNumber = 0;
 
             for (int i = 0; i < source.Length; ++i)
             {
-                int digit = toInt(source[i]) % m / n;
-                ++digitCounts[digit];
-                hasDigits |= digit > 0;
+                int number = toInt(source[i]) % m / n;
+                ++numbersCounts[number];
+                maxNumber = Math.Max(maxNumber, number);
             }
 
-            for (int i = 1; i < 10; i++)
+            for (int i = 1; i <= maxNumber; i++)
             {
-                digitCounts[i] += digitCounts[i - 1];
+                numbersCounts[i] += numbersCounts[i - 1];
             }
 
             for (int i = source.Length - 1; i >= 0; --i)
             {
                 int digit = toInt(source[i]) % m / n;
-                --digitCounts[digit];
-                dest[digitCounts[digit]] = source[i];
+                --numbersCounts[digit];
+                dest[numbersCounts[digit]] = source[i];
             }
 
-            return hasDigits;
+            return maxNumber > 0;
         }
 
         private static void Swap<T>(ref T arg1, ref T arg2)

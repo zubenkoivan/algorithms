@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Algorithms.PatternMatching.AhoCorasickAlgorithm;
+using Algorithms.PatternMatching.SuffixArrays;
 using Algorithms.PatternMatching.UkkonenAlgorithm;
 using FluentAssertions;
 using Xunit;
@@ -49,6 +50,14 @@ namespace Algorithms.Tests
             var text = new SuffixTree(Text);
 
             text.HasPattern("not to be").Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_Check_Text_Has_Pattern_With_Suffix_Array()
+        {
+            var text = new SuffixArray(Text);
+
+            //text.HasPattern("not to be").Should().BeTrue();
         }
     }
 }

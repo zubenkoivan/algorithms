@@ -4,24 +4,22 @@ namespace Algorithms.Sorting
 {
     public static class RadixSort
     {
-        public static TElement[] Sort<TElement>(TElement[] array, Func<TElement, int> toInt)
+        public static void Sort<TElement>(TElement[] array, Func<TElement, int> toInt)
         {
-            var source = new TElement[array.Length];
-            var dest = new TElement[array.Length];
+            TElement[] source = array;
+            var dest = new TElement[source.Length];
             var digitCounts = new int[10];
             bool hasDigits = true;
-
-            Array.Copy(array, source, array.Length);
 
             for (int digitNumber = 0; hasDigits; ++digitNumber)
             {
                 hasDigits = false;
-                int m = (int) Math.Pow(10, digitNumber + 1);
-                int n = m/10;
+                int m = (int)Math.Pow(10, digitNumber + 1);
+                int n = m / 10;
 
                 for (int i = 0; i < source.Length; ++i)
                 {
-                    int digit = toInt(source[i])%m/n;
+                    int digit = toInt(source[i]) % m / n;
                     ++digitCounts[digit];
                     hasDigits |= digit > 0;
                 }
@@ -38,15 +36,21 @@ namespace Algorithms.Sorting
                     dest[digitCounts[digit]] = source[i];
                 }
 
-                TElement[] temp = source;
-                source = dest;
-                dest = temp;
-
+                Swap(ref source, ref dest);
                 Array.Clear(digitCounts, 0, 10);
-                Array.Clear(dest, 0, dest.Length);
             }
 
-            return source;
+            if (source != array)
+            {
+                Array.Copy(source, array, source.Length);
+            }
+        }
+
+        private static void Swap<T>(ref T arg1, ref T arg2)
+        {
+            T temp = arg1;
+            arg1 = arg2;
+            arg2 = temp;
         }
     }
 }

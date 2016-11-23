@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Algorithms.PatternMatching.AhoCorasickAlgorithm;
 using Algorithms.PatternMatching.SuffixArrays;
+using Algorithms.PatternMatching.SuffixArrays.KarkkainenSanders;
 using Algorithms.PatternMatching.SuffixArrays.KarpMillerRosenberg;
 using Algorithms.PatternMatching.UkkonenAlgorithm;
 using FluentAssertions;
@@ -54,9 +55,18 @@ namespace Algorithms.Tests
         }
 
         [Fact]
-        public void Should_Check_Text_Has_Pattern_With_Suffix_Array()
+        public void Should_Check_Text_Has_Pattern_With_Karp_Miller_Rosenberg_Suffix_Array()
         {
             var text = new SuffixArray(new KarpMillerRosenbergConstructor(), Text);
+
+            //text.HasPattern("not to be").Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_Check_Text_Has_Pattern_With_Karkkainen_Sanders_Suffix_Array()
+        {
+            //var text = new SuffixArray(new KarkkainenSandersConstructor(), "abacaba");
+            var text = new SuffixArray(new KarkkainenSandersConstructor(), Text);
 
             //text.HasPattern("not to be").Should().BeTrue();
         }

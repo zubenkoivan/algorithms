@@ -68,7 +68,7 @@ namespace Algorithms.Sorting
                 dest[numbersCounts[digit]] = source[i];
             }
 
-            return maxNumber > 0;
+            return maxNumber >= Base / 10;
         }
 
         private static void Swap<T>(ref T arg1, ref T arg2)

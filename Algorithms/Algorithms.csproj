@@ -54,6 +54,8 @@
     <Compile Include="PatternMatching\PatternBase.cs" />
     <Compile Include="PatternMatching\SuffixArrays\ISuffixArrayConstructor.cs" />
     <Compile Include="PatternMatching\SuffixArrays\KarkkainenSanders\KarkkainenSandersConstructor.cs" />
+    <Compile Include="PatternMatching\SuffixArrays\KarkkainenSanders\Label.cs" />
+    <Compile Include="PatternMatching\SuffixArrays\KarkkainenSanders\LabelsPair.cs" />
     <Compile Include="PatternMatching\SuffixArrays\KarkkainenSanders\Triple.cs" />
     <Compile Include="PatternMatching\SuffixArrays\KarpMillerRosenberg\KarpMillerRosenbergConstructor.cs" />
     <Compile Include="PatternMatching\SuffixArrays\KarpMillerRosenberg\LabelsPair.cs" />

@@ -7,65 +7,64 @@ namespace Algorithms.PatternMatching.SuffixArrays.KarpMillerRosenberg
     {
         public int[] Create(string text)
         {
-            var labels = new LabelsPair[text.Length];
-            var nextLabels = new LabelsPair[text.Length];
-            var sortBuffer = new LabelsPair[text.Length];
-            var ranks = new int[text.Length];
+            int textLength = text.Length;
+            var labels = new int[textLength];
+            var ranks = new int[textLength];
 
-            for (int i = 0; i < text.Length; ++i)
+            for (int i = 0; i < textLength; ++i)
             {
-                labels[i] = new LabelsPair(i, text[i]);
-            }
-
-            for (int i = 0; i < labels.Length; ++i)
-            {
+                labels[i] = text[i];
                 ranks[i] = i;
             }
 
-            for (int length = 1; length < text.Length;)
+            var nextLabels = new LabelsPair[textLength];
+            var sortBuffer = new LabelsPair[textLength];
+
+            for (int length = 1; length < textLength;)
             {
-                length = Math.Min(length * 2, text.Length);
+                length = Math.Min(length * 2, textLength);
 
                 for (int i = 0; i < ranks.Length - length / 2; ++i)
                 {
                     int half1 = ranks[i];
                     int half2 = ranks[i + length / 2];
-                    nextLabels[i] = new LabelsPair(i, labels[half1].Label1, labels[half2].Label1);
+                    nextLabels[i] = new LabelsPair(i, labels[half1], labels[half2]);
                 }
 
                 for (int i = ranks.Length - length / 2; i < ranks.Length; ++i)
                 {
                     int half1 = ranks[i];
-                    nextLabels[i] = new LabelsPair(i, labels[half1].Label1);
+                    nextLabels[i] = new LabelsPair(i, labels[half1]);
                 }
 
-                Swap(ref labels, ref nextLabels);
+                RadixSort.Sort(nextLabels, sortBuffer, x => x.Label2);
+                RadixSort.Sort(nextLabels, sortBuffer, x => x.Label1);
 
-                RadixSort.Sort(labels, sortBuffer, x => x.Label2);
-                RadixSort.Sort(labels, sortBuffer, x => x.Label1);
-
-                MarkWithLabels(labels);
-                UpdateRanks(ranks, labels);
+                if (length != textLength)
+                {
+                    MarkWithLabels(labels, nextLabels);
+                    UpdateRanks(ranks, nextLabels);
+                }
             }
 
-            int[] result = ranks;
+            int[] suffixArray = ranks;
 
-            for (int i = 0; i < result.Length; i++)
+            for (int i = 0; i < textLength; ++i)
             {
-                result[i] = labels[i].SourceIndex;
+                suffixArray[i] = nextLabels[i].SourceIndex;
             }
 
-            return result;
+            return suffixArray;
         }
 
-        private static void MarkWithLabels(LabelsPair[] labels)
+        private static void MarkWithLabels(int[] labels, LabelsPair[] nextLabels)
         {
-            LabelsPair previous = labels[0];
+            LabelsPair previous = nextLabels[0];
             int currentLabel = 0;
 
-            for (int i = 0; i < labels.Length; ++i)
+            for (int i = 0; i < nextLabels.Length; ++i)
             {
-                LabelsPair label = labels[i];
+                LabelsPair label = nextLabels[i];
 
                 if (previous.Label1 != label.Label1 || previous.Label2 != label.Label2)
                 {
@@ -73,7 +72,7 @@ namespace Algorithms.PatternMatching.SuffixArrays.KarpMillerRosenberg
                     previous = label;
                 }
 
-                labels[i] = new LabelsPair(label.SourceIndex, currentLabel);
+                labels[i] = currentLabel;
             }
         }
 
@@ -83,13 +82,6 @@ namespace Algorithms.PatternMatching.SuffixArrays.KarpMillerRosenberg
             {
                 ranks[labels[i].SourceIndex] = i;
             }
-        }
-
-        private static void Swap<T>(ref T arg1, ref T arg2)
-        {
-            T temp = arg1;
-            arg1 = arg2;
-            arg2 = temp;
         }
     }
 }

@@ -57,7 +57,7 @@ namespace Algorithms.PatternMatching.SuffixArrays.KarkkainenSanders
             int length0 = length01 - length01 / 2;
             int length2 = symbols.Length - length01;
             int suffixArray01Start = suffixArray.Length - length01;
-            int[] ranks = buffer;
+            int[] ranks01 = buffer;
 
             CreateSuffixArray(CreateTriples01(symbols, length01, length0));
 
@@ -65,14 +65,14 @@ namespace Algorithms.PatternMatching.SuffixArrays.KarkkainenSanders
             {
                 int originalIndex = suffixArray[i] % length0 * 3 + suffixArray[i] / length0;
                 suffixArray[i] = originalIndex;
-                ranks[originalIndex] = i;
+                ranks01[originalIndex] = i;
             }
 
-            FillSuffixArray2(symbols, ranks, length2);
+            FillSuffixArray2(symbols, ranks01, length2);
 
             SortedArrays.Merge(suffixArray, suffixArray01Start, length01,
                 suffixArray2, 0, length2,
-                (s01, s2) => Compare(s01, s2, symbols, ranks));
+                (s01, s2) => Compare(s01, s2, symbols, ranks01));
         }
 
         private void CreateSimpleSuffixArray(int[] symbols)

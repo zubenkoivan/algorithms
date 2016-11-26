@@ -33,8 +33,7 @@ namespace Algorithms.PatternMatching.UkkonenAlgorithm
 
         public Edge GetEdge(char symbol)
         {
-            Edge edge;
-            return edges.TryGetValue(symbol, out edge) ? edge : null;
+            return edges.TryGetValue(symbol, out Edge edge) ? edge : null;
         }
 
         public void AddEdge(Edge edge)

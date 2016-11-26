@@ -20,12 +20,12 @@ namespace Algorithms.PatternMatching.SuffixArrays.KarkkainenSanders
             int length = text.Length;
             int[] symbols = ToIntArray(text);
             suffixArray = new int[length];
-            buffer = new int[length + 1];
+            buffer = new int[length];
             suffixArray2 = new int[length / 3];
             suffixArray2SortBuffer = new int[length / 3];
 
             int[] result = suffixArray;
-            CreateSuffixArray(symbols);
+            FillSuffixArray(symbols);
 
             suffixArray = null;
             buffer = null;
@@ -47,7 +47,7 @@ namespace Algorithms.PatternMatching.SuffixArrays.KarkkainenSanders
             return symbols;
         }
 
-        private void CreateSuffixArray(int[] symbols)
+        private void FillSuffixArray(int[] symbols)
         {
             if (symbols.Length < 3)
             {
@@ -56,12 +56,22 @@ namespace Algorithms.PatternMatching.SuffixArrays.KarkkainenSanders
             }
 
             int length01 = symbols.Length - symbols.Length / 3;
+            int suffixArray01Start = suffixArray.Length - length01;
             int length0 = length01 - length01 / 2;
             int length2 = symbols.Length - length01;
-            int suffixArray01Start = suffixArray.Length - length01;
-            int[] ranks01 = buffer;
 
-            CreateSuffixArray(CreateTriples01(symbols, length01, length0));
+            int[] labels = suffixArray;
+            int[] indexes = buffer;
+
+            if (MarkTriplesWithLabels(symbols, labels, indexes))
+            {
+                Array.Copy(indexes, 0, suffixArray, suffixArray.Length - symbols.Length, symbols.Length);
+                return;
+            }
+
+            FillSuffixArray(CreateTriples01(labels, indexes, symbols.Length, length0, length01));
+
+            int[] ranks01 = buffer;
 
             for (int i = suffixArray01Start; i < suffixArray.Length; ++i)
             {
@@ -95,43 +105,60 @@ namespace Algorithms.PatternMatching.SuffixArrays.KarkkainenSanders
             suffixArray[suffixArray.Length - 1] = 0;
         }
 
-        private int[] CreateTriples01(int[] symbols, int length01, int length0)
+        private static bool MarkTriplesWithLabels(int[] symbols, int[] labels, int[] indexes)
         {
-            var triples01 = new int[length01];
-            int[] sortBuffer = buffer;
-            int[] ranks = buffer;
+            int[] sortBuffer = labels;
 
             for (int i = 0; i < symbols.Length; ++i)
             {
-                sortBuffer[i] = i / 2 * 3 + i % 2;
+                indexes[i] = i;
             }
 
-            RadixSort.Sort(sortBuffer, triples01, triples01.Length, i => Symbol3(i, symbols));
-            RadixSort.Sort(sortBuffer, triples01, triples01.Length, i => Symbol2(i, symbols));
-            RadixSort.Sort(sortBuffer, triples01, triples01.Length, i => Symbol1(i, symbols));
-
-            for (int i = 0; i < triples01.Length; ++i)
-            {
-                int @class = sortBuffer[i] % 3;
-                ranks[i] = sortBuffer[i] / 3 + @class * length0;
-            }
+            RadixSort.Sort(indexes, sortBuffer, symbols.Length, i => Symbol3(i, symbols));
+            RadixSort.Sort(indexes, sortBuffer, symbols.Length, i => Symbol2(i, symbols));
+            RadixSort.Sort(indexes, sortBuffer, symbols.Length, i => Symbol1(i, symbols));
 
             int currentLabel = 0;
-            int previous = triples01[0];
+            int previousIndex = indexes[0];
+            bool allSymbolsDifferent = true;
+            labels[0] = 0;
 
-            for (int i = 0; i < length01; ++i)
+            for (int i = 1; i < symbols.Length; ++i)
             {
-                int current = sortBuffer[i];
+                int currentIndex = indexes[i];
+                bool firstSymbolsDifferent = Symbol1(previousIndex, symbols) != Symbol1(currentIndex, symbols);
 
-                if (Symbol1(previous, symbols) != Symbol1(current, symbols)
-                    || Symbol2(previous, symbols) != Symbol2(current, symbols)
-                    || Symbol3(previous, symbols) != Symbol3(current, symbols))
+                if (firstSymbolsDifferent
+                    || Symbol2(previousIndex, symbols) != Symbol2(currentIndex, symbols)
+                    || Symbol3(previousIndex, symbols) != Symbol3(currentIndex, symbols))
                 {
-                    previous = current;
                     ++currentLabel;
                 }
 
-                triples01[ranks[i]] = currentLabel;
+                labels[i] = currentLabel;
+                allSymbolsDifferent &= firstSymbolsDifferent;
+                previousIndex = currentIndex;
+            }
+
+            return allSymbolsDifferent;
+        }
+
+        private static int[] CreateTriples01(int[] labels, int[] indexes, int length, int length0, int length01)
+        {
+            var triples01 = new int[length01];
+
+            for (int i = 0; i < length; ++i)
+            {
+                int currentIndex = indexes[i];
+                int @class = currentIndex % 3;
+
+                if (@class == 2)
+                {
+                    continue;
+                }
+
+                int index = currentIndex / 3 + @class * length0;
+                triples01[index] = labels[i];
             }
 
             return triples01;

@@ -5,7 +5,7 @@ namespace Algorithms.Sorting
 {
     public static class RadixSort
     {
-        private const int Base = 100000;
+        private const int Base = 1000000;
         private static readonly ArrayPool<int> NumbersCountsPool = ArrayPool<int>.Create();
 
         public static void Sort<TElement>(TElement[] array, Func<TElement, int> toInt)

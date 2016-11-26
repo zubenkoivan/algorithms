@@ -17,13 +17,15 @@ namespace Algorithms.PatternMatching.SuffixArrays.KarkkainenSanders
 
         public int[] Create(string text)
         {
-            suffixArray = new int[text.Length];
-            buffer = new int[text.Length + 1];
-            suffixArray2 = new int[text.Length / 3];
-            suffixArray2SortBuffer = new int[text.Length / 3];
+            int length = text.Length;
+            int[] symbols = ToIntArray(text);
+            suffixArray = new int[length];
+            buffer = new int[length + 1];
+            suffixArray2 = new int[length / 3];
+            suffixArray2SortBuffer = new int[length / 3];
 
             int[] result = suffixArray;
-            CreateSuffixArray(ToIntArray(text));
+            CreateSuffixArray(symbols);
 
             suffixArray = null;
             buffer = null;

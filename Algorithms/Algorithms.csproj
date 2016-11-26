@@ -54,8 +54,6 @@
     <Compile Include="PatternMatching\PatternBase.cs" />
     <Compile Include="PatternMatching\SuffixArrays\ISuffixArrayConstructor.cs" />
     <Compile Include="PatternMatching\SuffixArrays\KarkkainenSanders\KarkkainenSandersConstructor.cs" />
-    <Compile Include="PatternMatching\SuffixArrays\KarkkainenSanders\Label.cs" />
-    <Compile Include="PatternMatching\SuffixArrays\KarkkainenSanders\Triple.cs" />
     <Compile Include="PatternMatching\SuffixArrays\KarpMillerRosenberg\KarpMillerRosenbergConstructor.cs" />
     <Compile Include="PatternMatching\SuffixArrays\KarpMillerRosenberg\LabelsPair.cs" />
     <Compile Include="PatternMatching\SuffixArrays\SuffixArray.cs" />
@@ -67,6 +65,7 @@
     <Compile Include="PatternMatching\ZFunctionAlgorithm\RightBlock.cs" />
     <Compile Include="PatternMatching\ZFunctionAlgorithm\ZFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SortedArraysMerging\SortedArrays.cs" />
     <Compile Include="Sorting\RadixSort.cs" />
   </ItemGroup>
   <ItemGroup>

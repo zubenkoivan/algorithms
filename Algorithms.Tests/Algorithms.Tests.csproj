@@ -82,6 +82,7 @@
   <ItemGroup>
     <Compile Include="PatternMatchingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SortdedArraysMergingTests.cs" />
     <Compile Include="SortingTests.cs" />
   </ItemGroup>
   <ItemGroup>

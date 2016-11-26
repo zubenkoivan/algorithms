@@ -5,14 +5,29 @@ namespace Algorithms.Sorting
 {
     public static class RadixSort
     {
-        private const int Base = 1000;
+        private const int Base = 100000;
         private static readonly ArrayPool<int> NumbersCountsPool = ArrayPool<int>.Create();
+
+        public static void Sort<TElement>(TElement[] array, Func<TElement, int> toInt)
+        {
+            Sort(array, new TElement[array.Length], array.Length, toInt);
+        }
 
         public static void Sort<TElement>(TElement[] array, TElement[] buffer, Func<TElement, int> toInt)
         {
-            if (buffer.Length != array.Length)
+            Sort(array, buffer, array.Length, toInt);
+        }
+
+        public static void Sort<TElement>(TElement[] array, TElement[] buffer, int length, Func<TElement, int> toInt)
+        {
+            if (array.Length < length)
             {
-                throw new ArgumentException(nameof(buffer), "Buffer array must be of the same size as sorted array");
+                throw new ArgumentException($"Array is less than {length}", nameof(array));
+            }
+
+            if (buffer.Length < length)
+            {
+                throw new ArgumentException($"Buffer array is less than {length}", nameof(buffer));
             }
 
             if (toInt == null)
@@ -26,30 +41,27 @@ namespace Algorithms.Sorting
 
             for (int i = 0; canContinue; ++i)
             {
-                canContinue = CountingSort(source, buffer, toInt, numbersCounts, i);
+                canContinue = CountingSort(source, buffer, length, numbersCounts, toInt, i);
                 Swap(ref source, ref buffer);
                 Array.Clear(numbersCounts, 0, Base);
             }
 
+            NumbersCountsPool.Return(numbersCounts);
+
             if (source != array)
             {
-                Array.Copy(source, array, source.Length);
+                Array.Copy(source, array, length);
             }
         }
 
-        public static void Sort<TElement>(TElement[] array, Func<TElement, int> toInt)
+        private static bool CountingSort<TElement>(TElement[] source, TElement[] dest, int length,
+            int[] numbersCounts, Func<TElement, int> toInt, int iteration)
         {
-            Sort(array, new TElement[array.Length], toInt);
-        }
-
-        private static bool CountingSort<TElement>(TElement[] source, TElement[] dest, Func<TElement, int> toInt,
-            int[] numbersCounts, int iteration)
-        {
-            int m = (int)Math.Pow(Base, iteration + 1);
+            int m = (int) Math.Pow(Base, iteration + 1);
             int n = m / Base;
             int maxNumber = 0;
 
-            for (int i = 0; i < source.Length; ++i)
+            for (int i = 0; i < length; ++i)
             {
                 int number = toInt(source[i]) % m / n;
                 ++numbersCounts[number];
@@ -61,11 +73,11 @@ namespace Algorithms.Sorting
                 numbersCounts[i] += numbersCounts[i - 1];
             }
 
-            for (int i = source.Length - 1; i >= 0; --i)
+            for (int i = length - 1; i >= 0; --i)
             {
-                int digit = toInt(source[i]) % m / n;
-                --numbersCounts[digit];
-                dest[numbersCounts[digit]] = source[i];
+                int number = toInt(source[i]) % m / n;
+                --numbersCounts[number];
+                dest[numbersCounts[number]] = source[i];
             }
 
             return maxNumber >= Base / 10;

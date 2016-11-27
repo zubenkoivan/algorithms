@@ -1,4 +1,4 @@
-﻿namespace Algorithms.PatternMatching.SuffixArrays
+﻿namespace Algorithms.TextProcessing.SuffixArrays
 {
     public interface ISuffixArrayConstructor
     {

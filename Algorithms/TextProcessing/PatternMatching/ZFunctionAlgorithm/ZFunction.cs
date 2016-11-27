@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Algorithms.PatternMatching.ZFunctionAlgorithm
+namespace Algorithms.TextProcessing.PatternMatching.ZFunctionAlgorithm
 {
     internal class ZFunction
     {

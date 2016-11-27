@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Algorithms.PatternMatching.KnuthMorrisPrattAlgorithm
+namespace Algorithms.TextProcessing.PatternMatching.KnuthMorrisPrattAlgorithm
 {
     public sealed class Pattern : PatternBase
     {

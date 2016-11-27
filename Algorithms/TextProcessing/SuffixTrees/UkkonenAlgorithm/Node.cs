@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Algorithms.PatternMatching.UkkonenAlgorithm
+namespace Algorithms.TextProcessing.SuffixTrees.UkkonenAlgorithm
 {
     internal class Node
     {

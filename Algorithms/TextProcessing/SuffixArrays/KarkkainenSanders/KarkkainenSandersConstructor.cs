@@ -2,7 +2,7 @@
 using Algorithms.SortedArraysMerging;
 using Algorithms.Sorting;
 
-namespace Algorithms.PatternMatching.SuffixArrays.KarkkainenSanders
+namespace Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders
 {
     public class KarkkainenSandersConstructor : ISuffixArrayConstructor
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Algorithms.PatternMatching.UkkonenAlgorithm
+namespace Algorithms.TextProcessing.SuffixTrees.UkkonenAlgorithm
 {
     public class SuffixTree
     {

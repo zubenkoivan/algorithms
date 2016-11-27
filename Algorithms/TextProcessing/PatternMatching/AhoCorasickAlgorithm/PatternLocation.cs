@@ -1,4 +1,4 @@
-﻿namespace Algorithms.PatternMatching.AhoCorasickAlgorithm
+﻿namespace Algorithms.TextProcessing.PatternMatching.AhoCorasickAlgorithm
 {
     public struct PatternLocation
     {

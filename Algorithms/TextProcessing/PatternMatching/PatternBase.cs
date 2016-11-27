@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Algorithms.PatternMatching
+namespace Algorithms.TextProcessing.PatternMatching
 {
     public abstract class PatternBase
     {

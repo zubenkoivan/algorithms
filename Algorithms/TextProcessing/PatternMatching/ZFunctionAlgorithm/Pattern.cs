@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Algorithms.PatternMatching.ZFunctionAlgorithm
+namespace Algorithms.TextProcessing.PatternMatching.ZFunctionAlgorithm
 {
     public sealed class Pattern : PatternBase
     {

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace Algorithms.PatternMatching.SuffixArrays
+namespace Algorithms.TextProcessing.SuffixArrays
 {
     public class SuffixArray
     {

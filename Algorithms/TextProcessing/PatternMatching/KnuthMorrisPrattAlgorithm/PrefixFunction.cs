@@ -1,4 +1,4 @@
-﻿namespace Algorithms.PatternMatching.KnuthMorrisPrattAlgorithm
+﻿namespace Algorithms.TextProcessing.PatternMatching.KnuthMorrisPrattAlgorithm
 {
     internal class PrefixFunction
     {

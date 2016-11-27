@@ -1,7 +1,7 @@
 ﻿using System;
 using Algorithms.Sorting;
 
-namespace Algorithms.PatternMatching.SuffixArrays.KarpMillerRosenberg
+namespace Algorithms.TextProcessing.SuffixArrays.KarpMillerRosenberg
 {
     public class KarpMillerRosenbergConstructor : ISuffixArrayConstructor
     {

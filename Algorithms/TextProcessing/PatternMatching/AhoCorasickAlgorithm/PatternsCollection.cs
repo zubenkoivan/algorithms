@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Algorithms.PatternMatching.AhoCorasickAlgorithm
+namespace Algorithms.TextProcessing.PatternMatching.AhoCorasickAlgorithm
 {
     public class PatternsCollection
     {

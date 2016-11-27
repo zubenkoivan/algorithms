@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
-using Algorithms.PatternMatching.AhoCorasickAlgorithm;
-using Algorithms.PatternMatching.SuffixArrays;
-using Algorithms.PatternMatching.SuffixArrays.KarkkainenSanders;
-using Algorithms.PatternMatching.SuffixArrays.KarpMillerRosenberg;
-using Algorithms.PatternMatching.UkkonenAlgorithm;
+using Algorithms.TextProcessing.LcpArrays.Kasai;
+using Algorithms.TextProcessing.PatternMatching.AhoCorasickAlgorithm;
+using Algorithms.TextProcessing.SuffixArrays;
+using Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders;
+using Algorithms.TextProcessing.SuffixArrays.KarpMillerRosenberg;
+using Algorithms.TextProcessing.SuffixTrees.UkkonenAlgorithm;
 using FluentAssertions;
 using Xunit;
 
-using ZFunctionPattern = Algorithms.PatternMatching.ZFunctionAlgorithm.Pattern;
-using KnuthMorrisPrattPattern = Algorithms.PatternMatching.KnuthMorrisPrattAlgorithm.Pattern;
+using ZFunctionPattern = Algorithms.TextProcessing.PatternMatching.ZFunctionAlgorithm.Pattern;
+using KnuthMorrisPrattPattern = Algorithms.TextProcessing.PatternMatching.KnuthMorrisPrattAlgorithm.Pattern;
 
 namespace Algorithms.Tests
 {
@@ -69,6 +70,17 @@ namespace Algorithms.Tests
             var text = new SuffixArray(new KarkkainenSandersConstructor(), Text);
 
             //text.HasPattern("not to be").Should().BeTrue();
+        }
+
+        [Fact]
+        public void Should_Create_LCP_Array_With_Kasai_Algorithm()
+        {
+            const string text = "abacaba";
+            int[] suffixArray = { 6, 4, 0, 2, 5, 1, 3 };
+
+            int[] lcpArray = new KasaiConstructor().Create(text, suffixArray);
+
+            lcpArray.ShouldBeEquivalentTo(new[] { 1, 3, 1, 0, 2, 0 });
         }
     }
 }

@@ -80,10 +80,14 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="LcpArraysTests.cs" />
     <Compile Include="PatternMatchingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SortdedArraysMergingTests.cs" />
     <Compile Include="SortingTests.cs" />
+    <Compile Include="SuffixArraysTests.cs" />
+    <Compile Include="SuffixTreesTests.cs" />
+    <Compile Include="TestData.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Algorithms\Algorithms.csproj">
@@ -94,6 +98,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

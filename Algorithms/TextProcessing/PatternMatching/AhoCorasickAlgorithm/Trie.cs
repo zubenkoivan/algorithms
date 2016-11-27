@@ -1,13 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Algorithms.TextProcessing.PatternMatching.AhoCorasickAlgorithm
 {
-    internal class Trie
+    public class Trie
     {
         private readonly TrieNode root;
 
-        public Trie(string[] patterns)
+        public Trie(params string[] patterns)
         {
+            if (patterns.Length == 0)
+            {
+                throw new ArgumentException("is empty", nameof(patterns));
+            }
+
+            if (patterns.Any(string.IsNullOrEmpty))
+            {
+                throw new ArgumentException("one of patterns is empty", nameof(patterns));
+            }
+
             root = new TrieNode(0);
             BuildTrie(patterns);
         }
@@ -53,6 +65,11 @@ namespace Algorithms.TextProcessing.PatternMatching.AhoCorasickAlgorithm
 
         public IEnumerable<PatternLocation> LocationsIn(string text)
         {
+            if (string.IsNullOrEmpty(text))
+            {
+                throw new ArgumentException("is empty", nameof(text));
+            }
+
             TrieNode currentNode = root;
 
             for (int i = 0; i < text.Length; i++)

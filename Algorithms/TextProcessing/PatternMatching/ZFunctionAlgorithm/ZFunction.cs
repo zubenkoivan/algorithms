@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Algorithms.TextProcessing.PatternMatching.ZFunctionAlgorithm
 {
-    internal class ZFunction
+    public class ZFunction
     {
         private readonly string pattern;
         private readonly int patternLength;
@@ -22,11 +22,6 @@ namespace Algorithms.TextProcessing.PatternMatching.ZFunctionAlgorithm
             }
         }
 
-        public IEnumerable<int> Calculate(string text)
-        {
-            return Calculate(text, 0);
-        }
-
         private IEnumerable<int> Calculate(string text, int startIndex)
         {
             var rightBlock = new RightBlock();
@@ -41,12 +36,12 @@ namespace Algorithms.TextProcessing.PatternMatching.ZFunctionAlgorithm
                     int rightPartLength = rightBlock.RightPartLength(i);
 
                     matchLength = zFunction[k] == rightPartLength
-                        ? Match(text, rightBlock.NextIndex, k + zFunction[k])
+                        ? Lcp(text, rightBlock.NextIndex, k + zFunction[k])
                         : Math.Min(rightPartLength, zFunction[k]);
                 }
                 else
                 {
-                    matchLength = Match(text, i);
+                    matchLength = Lcp(text, i);
                 }
 
                 rightBlock.Update(i, matchLength);
@@ -55,7 +50,7 @@ namespace Algorithms.TextProcessing.PatternMatching.ZFunctionAlgorithm
             }
         }
 
-        public int Match(string text, int textFrom, int patternFrom = 0)
+        private int Lcp(string text, int textFrom, int patternFrom = 0)
         {
             int result = 0;
 
@@ -67,6 +62,25 @@ namespace Algorithms.TextProcessing.PatternMatching.ZFunctionAlgorithm
             }
 
             return result;
+        }
+
+        public IEnumerable<int> IndexesIn(string text)
+        {
+            if (string.IsNullOrEmpty(text) || text.Length < patternLength)
+            {
+                yield break;
+            }
+            int textIndex = 0;
+
+            foreach (int matchLength in Calculate(text, 0))
+            {
+                if (matchLength == patternLength)
+                {
+                    yield return textIndex;
+                }
+
+                ++textIndex;
+            }
         }
     }
 }

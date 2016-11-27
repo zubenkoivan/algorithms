@@ -19,7 +19,7 @@ namespace Algorithms.TextProcessing.PatternMatching.KnuthMorrisPrattAlgorithm
         {
             var prefixFunction = new int[pattern.Length];
 
-            for (int i = 1; i < pattern.Length; ++i)
+            for (int i = 2; i < pattern.Length; ++i)
             {
                 for (int k = i - 1; k > 0; k = prefixFunction[k] - 1)
                 {
@@ -41,20 +41,20 @@ namespace Algorithms.TextProcessing.PatternMatching.KnuthMorrisPrattAlgorithm
                 yield break;
             }
 
-            int patternPrefixLength = 0;
+            int currentPrefixLength = 0;
 
             for (int textIndex = 0; textIndex < text.Length; ++textIndex)
             {
-                if (patternPrefixLength < patternLength && pattern[patternPrefixLength] == text[textIndex])
+                if (currentPrefixLength < patternLength && pattern[currentPrefixLength] == text[textIndex])
                 {
-                    patternPrefixLength += 1;
+                    ++currentPrefixLength;
                 }
                 else
                 {
-                    patternPrefixLength = FindPrefix(text[textIndex], patternPrefixLength);
+                    currentPrefixLength = FindPrefix(text[textIndex], currentPrefixLength);
                 }
 
-                if (patternPrefixLength == patternLength)
+                if (currentPrefixLength == patternLength)
                 {
                     yield return textIndex - patternLength + 1;
                 }

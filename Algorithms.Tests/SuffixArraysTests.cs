@@ -1,27 +1,40 @@
-﻿using Algorithms.TextProcessing.SuffixArrays;
+﻿using System.Linq;
+using Algorithms.TextProcessing.SuffixArrays;
 using Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders;
 using Algorithms.TextProcessing.SuffixArrays.KarpMillerRosenberg;
+using FluentAssertions;
 using Xunit;
 
 namespace Algorithms.Tests
 {
     public class SuffixArraysTests
     {
-        [Fact]
-        public void Should_Check_Text_Has_Pattern_With_Karp_Miller_Rosenberg_Suffix_Array()
+        public static readonly object[][] Constructors =
         {
-            var text = new SuffixArray(new KarpMillerRosenbergConstructor(), TestData.Text);
+            new object[] { new KarpMillerRosenbergConstructor() },
+            new object[] { new KarkkainenSandersConstructor() }
+        };
 
-            //text.HasPattern("not to be").Should().BeTrue();
+        [Theory, MemberData(nameof(Constructors))]
+        public void Should_Create_Suffix_Array(ISuffixArrayConstructor constructor)
+        {
+            const string text = TestData.Text;
+            int[] actualSuffixArray = constructor.Create(text);
+
+            actualSuffixArray.ShouldBeEquivalentTo(ExpectedSuffixArray(text));
         }
 
-        [Fact]
-        public void Should_Check_Text_Has_Pattern_With_Karkkainen_Sanders_Suffix_Array()
+        private static int[] ExpectedSuffixArray(string text)
         {
-            //var text = new SuffixArray(new KarkkainenSandersConstructor(), "abacaba");
-            var text = new SuffixArray(new KarkkainenSandersConstructor(), TestData.Text);
-
-            //text.HasPattern("not to be").Should().BeTrue();
+            return Enumerable.Range(0, text.Length)
+                .Select(i => new
+                {
+                    Index = i,
+                    Suffix = text.Substring(i)
+                })
+                .OrderBy(x => x.Suffix)
+                .Select(x => x.Index)
+                .ToArray();
         }
     }
 }

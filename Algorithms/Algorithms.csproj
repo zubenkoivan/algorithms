@@ -53,6 +53,7 @@
     <Compile Include="TextProcessing\LcpArrays\Kasai\KasaiConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\ISuffixArrayConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarkkainenSanders\KarkkainenSandersConstructor.cs" />
+    <Compile Include="TextProcessing\SuffixArrays\KarkkainenSanders\SymbolsCollection.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarpMillerRosenberg\KarpMillerRosenbergConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarpMillerRosenberg\LabelsPair.cs" />
     <Compile Include="TextProcessing\SuffixArrays\SuffixArray.cs" />

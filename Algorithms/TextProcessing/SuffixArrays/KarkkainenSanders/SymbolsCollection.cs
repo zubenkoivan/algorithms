@@ -6,8 +6,12 @@ namespace Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders
     internal class SymbolsCollection
     {
         private static readonly Func<int, int[], int> Symbol1 = (i, symbols) => symbols[i];
-        private static readonly Func<int, int[], int> Symbol2 = (i, symbols) => i < symbols.Length - 1 ? symbols[i + 1] : 0;
-        private static readonly Func<int, int[], int> Symbol3 = (i, symbols) => i < symbols.Length - 2 ? symbols[i + 2] : 0;
+
+        private static readonly Func<int, int[], int> Symbol2 =
+            (i, symbols) => i < symbols.Length - 1 ? symbols[i + 1] : 0;
+
+        private static readonly Func<int, int[], int> Symbol3 =
+            (i, symbols) => i < symbols.Length - 2 ? symbols[i + 2] : 0;
 
         private readonly int[] symbols;
 

@@ -1,8 +1,10 @@
 ﻿using System.Linq;
+using Algorithms.TextProcessing.LcpArrays;
 using Algorithms.TextProcessing.SuffixArrays;
 using Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders;
 using Algorithms.TextProcessing.SuffixArrays.KarpMillerRosenberg;
 using FluentAssertions;
+using Moq;
 using Xunit;
 
 namespace Algorithms.Tests
@@ -14,6 +16,22 @@ namespace Algorithms.Tests
             new object[] { new KarpMillerRosenbergConstructor() },
             new object[] { new KarkkainenSandersConstructor() }
         };
+
+        [Fact]
+        public void Should_Find_Index_Of_Pattern()
+        {
+            const string text = "abacaba";
+            var suffixArrayConstructor = new Mock<ISuffixArrayConstructor>();
+            var lcpArrayConstructor = new Mock<ILcpArrayConstructor>();
+
+            suffixArrayConstructor.Setup(x => x.Create(It.IsAny<string>()))
+                .Returns(new[] { 6, 4, 0, 2, 5, 1, 3 });
+            lcpArrayConstructor.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<int[]>()))
+                .Returns(new[] { 1, 3, 1, 0, 2, 0 });
+
+            bool actual = new SuffixArray(suffixArrayConstructor.Object, lcpArrayConstructor.Object, text).HasPattern("bacaba");
+            actual.ShouldBeEquivalentTo(true);
+        }
 
         [Theory, MemberData(nameof(Constructors))]
         public void Should_Create_Suffix_Array(ISuffixArrayConstructor constructor)

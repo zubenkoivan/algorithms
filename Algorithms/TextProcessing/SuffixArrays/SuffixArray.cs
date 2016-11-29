@@ -18,10 +18,15 @@ namespace Algorithms.TextProcessing.SuffixArrays
 
         public bool HasPattern(string pattern)
         {
-            var currentRange = new Range(0, suffixArray.Length - 1);
-            var patternLcp = new Lcp(ComputeLcp(suffixArray[currentRange.Start], pattern, 0),
-                ComputeLcp(suffixArray[currentRange.End], pattern, 0));
+            if (!CanContainPattern(pattern, patternLcp))
+            {
+                return false;
+            }
+
             LcpNode currentNode = lcpTree.Root;
+            var currentRange = new Range(0, suffixArray.Length - 1);
+            var patternLcp = new Lcp(ComputeLcp(suffixArray[currentRange.Start], pattern),
+                ComputeLcp(suffixArray[currentRange.End], pattern));
 
             if (patternLcp.Left == pattern.Length || patternLcp.Right == pattern.Length)
             {
@@ -31,6 +36,11 @@ namespace Algorithms.TextProcessing.SuffixArrays
             while (currentRange.Length > 2)
             {
                 var middleLcp = lcpTree.Lcp(currentNode, currentRange);
+
+                if (patternLcp.Min < middleLcp.Min)
+                {
+                    return false;
+                }
 
                 if (patternLcp.ShouldGoLeft(middleLcp))
                 {
@@ -51,6 +61,19 @@ namespace Algorithms.TextProcessing.SuffixArrays
             }
 
             return false;
+        }
+
+        private bool CanContainPattern(string pattern, Lcp patternLcp)
+        {
+            if (pattern.Length > text.Length)
+            {
+                return false;
+            }
+
+            var leftTextIndex = suffixArray[0] + patternLcp.Left;
+            var rightTextIndex = suffixArray[suffixArray.Length - 1] + patternLcp.Right;
+
+            return text[leftTextIndex] < pattern[patternLcp.Left] && pattern[patternLcp.Right] < text[rightTextIndex];
         }
 
         private bool TryFindPattern(string pattern, Lcp middleLcp, ref LcpNode currentNode,
@@ -82,7 +105,7 @@ namespace Algorithms.TextProcessing.SuffixArrays
             return false;
         }
 
-        private int ComputeLcp(int textFrom, string pattern, int patternFrom)
+        private int ComputeLcp(int textFrom, string pattern, int patternFrom = 0)
         {
             int lcp = 0;
 

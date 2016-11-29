@@ -8,6 +8,7 @@ namespace Algorithms.TextProcessing.SuffixArrays
         public readonly int Right;
 
         public int Max => Math.Max(Left, Right);
+        public int Min => Math.Min(Left, Right);
 
         public Lcp(int left, int right)
         {

@@ -60,6 +60,7 @@
     <Compile Include="TextProcessing\SuffixArrays\LcpNode.cs" />
     <Compile Include="TextProcessing\SuffixArrays\LcpTree.cs" />
     <Compile Include="TextProcessing\SuffixArrays\Range.cs" />
+    <Compile Include="TextProcessing\SuffixArrays\SearchContext.cs" />
     <Compile Include="TextProcessing\SuffixArrays\SuffixArray.cs" />
     <Compile Include="TextProcessing\SuffixTrees\UkkonenAlgorithm\Edge.cs" />
     <Compile Include="TextProcessing\SuffixTrees\UkkonenAlgorithm\Vertice.cs" />

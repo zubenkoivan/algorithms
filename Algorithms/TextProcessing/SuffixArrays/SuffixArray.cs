@@ -18,20 +18,25 @@ namespace Algorithms.TextProcessing.SuffixArrays
 
         public bool HasPattern(string pattern)
         {
-            if (!CanContainPattern(pattern, patternLcp))
+            Lcp patternLcp;
+
+            if (!CanContainPattern(pattern, out patternLcp))
             {
                 return false;
             }
-
-            LcpNode currentNode = lcpTree.Root;
-            var currentRange = new Range(0, suffixArray.Length - 1);
-            var patternLcp = new Lcp(ComputeLcp(suffixArray[currentRange.Start], pattern),
-                ComputeLcp(suffixArray[currentRange.End], pattern));
 
             if (patternLcp.Left == pattern.Length || patternLcp.Right == pattern.Length)
             {
                 return true;
             }
+
+            return HasPattern(pattern, patternLcp);
+        }
+
+        private bool HasPattern(string pattern, Lcp patternLcp)
+        {
+            LcpNode currentNode = lcpTree.Root;
+            var currentRange = new Range(0, suffixArray.Length - 1);
 
             while (currentRange.Length > 2)
             {
@@ -63,17 +68,25 @@ namespace Algorithms.TextProcessing.SuffixArrays
             return false;
         }
 
-        private bool CanContainPattern(string pattern, Lcp patternLcp)
+        private bool CanContainPattern(string pattern, out Lcp patternLcp)
         {
+            patternLcp = default(Lcp);
+
             if (pattern.Length > text.Length)
             {
                 return false;
             }
 
+            patternLcp = new Lcp(ComputeLcp(suffixArray[0], pattern),
+                ComputeLcp(suffixArray[suffixArray.Length - 1], pattern));
+
             var leftTextIndex = suffixArray[0] + patternLcp.Left;
             var rightTextIndex = suffixArray[suffixArray.Length - 1] + patternLcp.Right;
 
-            return text[leftTextIndex] < pattern[patternLcp.Left] && pattern[patternLcp.Right] < text[rightTextIndex];
+            return patternLcp.Left == pattern.Length
+                   || patternLcp.Right == pattern.Length
+                   || (text[leftTextIndex] < pattern[patternLcp.Left]
+                       && pattern[patternLcp.Right] < text[rightTextIndex]);
         }
 
         private bool TryFindPattern(string pattern, Lcp middleLcp, ref LcpNode currentNode,

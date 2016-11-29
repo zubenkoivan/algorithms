@@ -57,6 +57,8 @@
     <Compile Include="TextProcessing\SuffixArrays\KarpMillerRosenberg\KarpMillerRosenbergConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarpMillerRosenberg\LabelsPair.cs" />
     <Compile Include="TextProcessing\SuffixArrays\Lcp.cs" />
+    <Compile Include="TextProcessing\SuffixArrays\LcpNode.cs" />
+    <Compile Include="TextProcessing\SuffixArrays\LcpTree.cs" />
     <Compile Include="TextProcessing\SuffixArrays\Range.cs" />
     <Compile Include="TextProcessing\SuffixArrays\SuffixArray.cs" />
     <Compile Include="TextProcessing\SuffixTrees\UkkonenAlgorithm\Edge.cs" />

@@ -8,7 +8,7 @@
 
         public int Length => End - Start + 1;
 
-        public Range Left => new Range(0, Middle);
+        public Range Left => new Range(Start, Middle);
 
         public Range Right => new Range(Middle, End);
 

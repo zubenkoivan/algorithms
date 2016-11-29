@@ -1,5 +1,4 @@
-﻿using System;
-using Algorithms.TextProcessing.LcpArrays;
+﻿using Algorithms.TextProcessing.LcpArrays;
 
 namespace Algorithms.TextProcessing.SuffixArrays
 {
@@ -7,64 +6,45 @@ namespace Algorithms.TextProcessing.SuffixArrays
     {
         private readonly string text;
         private readonly int[] suffixArray;
-        private readonly int[] lcpTree;
+        private readonly LcpTree lcpTree;
 
         public SuffixArray(ISuffixArrayConstructor suffixArrayConstructor, ILcpArrayConstructor lcpArrayConstructor,
             string text)
         {
             this.text = text;
             suffixArray = suffixArrayConstructor.Create(text);
-            lcpTree = CreateLcpTree(lcpArrayConstructor.Create(text, suffixArray));
-        }
-
-        private static int[] CreateLcpTree(int[] lcpArray)
-        {
-            int length = lcpArray.Length * (lcpArray.Length + 1) / 2 - 1;
-            var lcpTree = new int[length];
-
-            Array.Copy(lcpArray, 0, lcpTree, length - lcpArray.Length, lcpArray.Length);
-
-            for (int i = lcpArray.Length - 1; i > 1; --i)
-            {
-                int skip = i * (i - 1) / 2 - 1;
-
-                for (int j = 0; j < i; ++j)
-                {
-                    int leftIndex = skip + j + i;
-                    lcpTree[skip + j] = Math.Min(lcpTree[leftIndex], lcpTree[leftIndex + 1]);
-                }
-            }
-
-            return lcpTree;
+            lcpTree = new LcpTree(lcpArrayConstructor.Create(text, suffixArray));
         }
 
         public bool HasPattern(string pattern)
         {
-            var range = new Range(0, suffixArray.Length - 1);
-
-            var patternLcp = new Lcp(Lcp(suffixArray[range.Start], pattern, 0),
-                Lcp(suffixArray[range.End], pattern, 0));
+            var currentRange = new Range(0, suffixArray.Length - 1);
+            var patternLcp = new Lcp(ComputeLcp(suffixArray[currentRange.Start], pattern, 0),
+                ComputeLcp(suffixArray[currentRange.End], pattern, 0));
+            LcpNode currentNode = lcpTree.Root;
 
             if (patternLcp.Left == pattern.Length || patternLcp.Right == pattern.Length)
             {
                 return true;
             }
 
-            while (range.Length > 2)
+            while (currentRange.Length > 2)
             {
-                var middleLcp = new Lcp(Lcp(range.Left), Lcp(range.Right));
+                var middleLcp = lcpTree.Lcp(currentNode, currentRange);
 
                 if (patternLcp.ShouldGoLeft(middleLcp))
                 {
-                    range = range.Left;
+                    currentNode = lcpTree.GoLeft(currentNode, currentRange);
+                    currentRange = currentRange.Left;
                     patternLcp = patternLcp.GoLeft(middleLcp);
                 }
                 else if (patternLcp.ShouldGoRight(middleLcp))
                 {
-                    range = range.Right;
+                    currentNode = lcpTree.GoRight(currentNode, currentRange);
+                    currentRange = currentRange.Right;
                     patternLcp = patternLcp.GoRight(middleLcp);
                 }
-                else if (TryFindPattern(pattern, middleLcp, ref patternLcp, ref range))
+                else if (TryFindPattern(pattern, middleLcp, ref currentNode, ref currentRange, ref patternLcp))
                 {
                     return true;
                 }
@@ -73,40 +53,36 @@ namespace Algorithms.TextProcessing.SuffixArrays
             return false;
         }
 
-        private bool TryFindPattern(string pattern, Lcp middleLcp, ref Lcp patternLcp, ref Range range)
+        private bool TryFindPattern(string pattern, Lcp middleLcp, ref LcpNode currentNode,
+            ref Range currentRange, ref Lcp patternLcp)
         {
             int lcp = patternLcp.Max;
-            lcp += Lcp(suffixArray[range.Middle] + lcp, pattern, lcp);
+            lcp += ComputeLcp(suffixArray[currentRange.Middle] + lcp, pattern, lcp);
 
             if (lcp == pattern.Length)
             {
                 return true;
             }
 
-            int textIndex = suffixArray[range.Middle] + lcp;
+            int textIndex = suffixArray[currentRange.Middle] + lcp;
 
             if (textIndex >= text.Length || pattern[lcp] > text[textIndex])
             {
-                range = range.Right;
+                currentNode = lcpTree.GoRight(currentNode, currentRange);
+                currentRange = currentRange.Right;
                 patternLcp = patternLcp.GoRight(middleLcp, lcp);
             }
             else
             {
-                range = range.Left;
+                currentNode = lcpTree.GoLeft(currentNode, currentRange);
+                currentRange = currentRange.Left;
                 patternLcp = patternLcp.GoLeft(middleLcp, lcp);
             }
 
             return false;
         }
 
-        private int Lcp(Range range)
-        {
-            int levelLength = suffixArray.Length - range.Length + 1;
-            int index = levelLength * (levelLength - 1) / 2 - 1 + range.Start;
-            return lcpTree[index];
-        }
-
-        private int Lcp(int textFrom, string pattern, int patternFrom)
+        private int ComputeLcp(int textFrom, string pattern, int patternFrom)
         {
             int lcp = 0;
 

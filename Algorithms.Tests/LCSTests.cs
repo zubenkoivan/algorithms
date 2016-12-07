@@ -1,4 +1,5 @@
-﻿using Algorithms.TextProcessing.LongestIncreasingSubsequences;
+﻿using System.Collections.Generic;
+using Algorithms.TextProcessing.LongestCommonSubsequences;
 using FluentAssertions;
 using Xunit;
 
@@ -9,11 +10,25 @@ namespace Algorithms.Tests
         [Fact]
         public void Should_Find_Lis()
         {
-            const string text = "abacaba";
+            char[] dna1 = "ACCGGTCGAGTGCGCGGAAGCCGGCCGAA".ToCharArray();
+            char[] dna2 = "GTCGTTCGGAATGCCGTTGCTCTGTAAA".ToCharArray();
 
-            string actualLis = new string(LIS<char>.Find(text.ToCharArray()));
+            char[] lcs = new HuntSzymanskiAlgorithm<char>(new CharComparer()).FindLCS(dna1, dna2);
 
-            actualLis.ShouldBeEquivalentTo("abc");
+            lcs.ShouldBeEquivalentTo("GTCGTCGGAAGCCGGCCGAA".ToCharArray());
+        }
+
+        public class CharComparer : IEqualityComparer<char>
+        {
+            public bool Equals(char x, char y)
+            {
+                return x.Equals(y);
+            }
+
+            public int GetHashCode(char obj)
+            {
+                return obj.GetHashCode();
+            }
         }
     }
 }

@@ -6,11 +6,10 @@ namespace Algorithms.TextProcessing.LongestIncreasingSubsequences
     {
         public static T[] Find(T[] input)
         {
+            int lisLength = 1;
             var minLasts = new int[input.Length];
             var resultChain = new int[input.Length];
-            int lisLength = 1;
 
-            minLasts[0] = 0;
             resultChain[0] = -1;
 
             for (int i = 1; i < input.Length; ++i)
@@ -39,17 +38,7 @@ namespace Algorithms.TextProcessing.LongestIncreasingSubsequences
             int start = 0;
             int end = lisLength - 1;
 
-            if (lisLength == 0)
-            {
-                return lisLength;
-            }
-
-            if (lisLength == 1)
-            {
-                return element.CompareTo(input[minLasts[0]]) <= 0 ? 0 : lisLength;
-            }
-
-            if (element.CompareTo(input[minLasts[0]]) <= 0)
+            if (element.CompareTo(input[minLasts[start]]) <= 0)
             {
                 return 0;
             }
@@ -64,27 +53,16 @@ namespace Algorithms.TextProcessing.LongestIncreasingSubsequences
                 int middle = (start + end) / 2;
                 int cmp = element.CompareTo(input[minLasts[middle]]);
 
-                if (cmp < 0)
-                {
-                    end = middle;
-                    continue;
-                }
-
-                if (cmp > 0)
-                {
-                    start = middle;
-                    continue;
-                }
-
                 if (cmp == 0)
                 {
                     return middle;
                 }
+
+                end = cmp < 0 ? middle : end;
+                start = cmp > 0 ? middle : start;
             }
 
-            return element.CompareTo(input[minLasts[start]]) > 0 && element.CompareTo(input[minLasts[end]]) <= 0
-                ? end
-                : lisLength;
+            return end;
         }
 
         private static T[] ExtractResult(T[] input, int[] resultChain, int lastIndex, int lisLength)

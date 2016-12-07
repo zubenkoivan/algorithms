@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Algorithms.TextProcessing.LcpArrays;
+using Algorithms.TextProcessing.LCPArrays;
 using Algorithms.TextProcessing.SuffixArrays;
 using Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders;
 using Algorithms.TextProcessing.SuffixArrays.KarpMillerRosenberg;
@@ -22,7 +22,7 @@ namespace Algorithms.Tests
         {
             const string text = "abacaba";
             var suffixArrayConstructor = new Mock<ISuffixArrayConstructor>();
-            var lcpArrayConstructor = new Mock<ILcpArrayConstructor>();
+            var lcpArrayConstructor = new Mock<ILCPArrayConstructor>();
 
             suffixArrayConstructor.Setup(x => x.Create(It.IsAny<string>()))
                 .Returns(new[] { 6, 4, 0, 2, 5, 1, 3 });

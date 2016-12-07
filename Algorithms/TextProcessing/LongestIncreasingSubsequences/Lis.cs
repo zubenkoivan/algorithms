@@ -2,7 +2,7 @@
 
 namespace Algorithms.TextProcessing.LongestIncreasingSubsequences
 {
-    public class Lis<T> where T : IComparable<T>
+    public class LIS<T> where T : IComparable<T>
     {
         public static T[] Find(T[] input)
         {

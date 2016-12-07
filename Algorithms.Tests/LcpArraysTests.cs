@@ -1,4 +1,4 @@
-﻿using Algorithms.TextProcessing.LcpArrays.Kasai;
+﻿using Algorithms.TextProcessing.LCPArrays.Kasai;
 using FluentAssertions;
 using Xunit;
 

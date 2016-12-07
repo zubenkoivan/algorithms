@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Algorithms.TextProcessing.LcpArrays.Kasai
+namespace Algorithms.TextProcessing.LCPArrays.Kasai
 {
-    public class KasaiConstructor : ILcpArrayConstructor
+    public class KasaiConstructor : ILCPArrayConstructor
     {
         public int[] Create(string text, int[] suffixArray)
         {

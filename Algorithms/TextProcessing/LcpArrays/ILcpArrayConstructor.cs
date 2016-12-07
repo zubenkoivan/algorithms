@@ -1,6 +1,6 @@
 ﻿namespace Algorithms.TextProcessing.LcpArrays
 {
-    public interface ILcpArrayConstructor
+    public interface ILCPArrayConstructor
     {
         int[] Create(string text, int[] suffixArray);
     }

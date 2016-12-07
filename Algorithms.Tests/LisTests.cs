@@ -11,7 +11,19 @@ namespace Algorithms.Tests
         {
             const string text = "abacaba";
 
-            string actualLis = new string(Lis<char>.Find(text.ToCharArray()));
+            string actualLis = new string(LIS<char>.Find(text.ToCharArray()));
+
+            actualLis.ShouldBeEquivalentTo("abc");
+        }
+    }
+    public class LcsTests
+    {
+        [Fact]
+        public void Should_Find_Lis()
+        {
+            const string text = "abacaba";
+
+            string actualLis = new string(LIS<char>.Find(text.ToCharArray()));
 
             actualLis.ShouldBeEquivalentTo("abc");
         }

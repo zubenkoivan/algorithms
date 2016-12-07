@@ -46,21 +46,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TextProcessing\LongestCommonSubsequences\HuntSzymanskiAlgorithm.cs" />
-    <Compile Include="TextProcessing\LongestIncreasingSubsequences\Lis.cs" />
+    <Compile Include="TextProcessing\LongestIncreasingSubsequences\LIS.cs" />
     <Compile Include="TextProcessing\PatternMatching\AhoCorasickAlgorithm\PatternLocation.cs" />
     <Compile Include="TextProcessing\PatternMatching\AhoCorasickAlgorithm\Trie.cs" />
     <Compile Include="TextProcessing\PatternMatching\AhoCorasickAlgorithm\TrieNode.cs" />
     <Compile Include="TextProcessing\PatternMatching\KnuthMorrisPrattAlgorithm\PrefixFunction.cs" />
-    <Compile Include="TextProcessing\LcpArrays\ILcpArrayConstructor.cs" />
-    <Compile Include="TextProcessing\LcpArrays\Kasai\KasaiConstructor.cs" />
+    <Compile Include="TextProcessing\LCPArrays\ILcpArrayConstructor.cs" />
+    <Compile Include="TextProcessing\LCPArrays\Kasai\KasaiConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\ISuffixArrayConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarkkainenSanders\KarkkainenSandersConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarkkainenSanders\SymbolsCollection.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarpMillerRosenberg\KarpMillerRosenbergConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarpMillerRosenberg\LabelsPair.cs" />
-    <Compile Include="TextProcessing\SuffixArrays\Lcp.cs" />
-    <Compile Include="TextProcessing\SuffixArrays\LcpNode.cs" />
-    <Compile Include="TextProcessing\SuffixArrays\LcpTree.cs" />
+    <Compile Include="TextProcessing\SuffixArrays\LCP.cs" />
+    <Compile Include="TextProcessing\SuffixArrays\LCPNode.cs" />
+    <Compile Include="TextProcessing\SuffixArrays\LCPTree.cs" />
     <Compile Include="TextProcessing\SuffixArrays\Range.cs" />
     <Compile Include="TextProcessing\SuffixArrays\SuffixArray.cs" />
     <Compile Include="TextProcessing\SuffixTrees\UkkonenAlgorithm\Edge.cs" />

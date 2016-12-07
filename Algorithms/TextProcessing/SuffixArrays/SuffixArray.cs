@@ -1,4 +1,4 @@
-﻿using Algorithms.TextProcessing.LcpArrays;
+﻿using Algorithms.TextProcessing.LCPArrays;
 
 namespace Algorithms.TextProcessing.SuffixArrays
 {
@@ -6,19 +6,19 @@ namespace Algorithms.TextProcessing.SuffixArrays
     {
         private readonly string text;
         private readonly int[] suffixArray;
-        private readonly LcpTree lcpTree;
+        private readonly LCPTree lcpTree;
 
-        public SuffixArray(ISuffixArrayConstructor suffixArrayConstructor, ILcpArrayConstructor lcpArrayConstructor,
+        public SuffixArray(ISuffixArrayConstructor suffixArrayConstructor, ILCPArrayConstructor ilcpArrayConstructor,
             string text)
         {
             this.text = text;
             suffixArray = suffixArrayConstructor.Create(text);
-            lcpTree = new LcpTree(lcpArrayConstructor.Create(text, suffixArray));
+            lcpTree = new LCPTree(ilcpArrayConstructor.Create(text, suffixArray));
         }
 
         public bool HasPattern(string pattern)
         {
-            if (!CanContainPattern(pattern, out Lcp patternLcp))
+            if (!CanContainPattern(pattern, out LCP patternLcp))
             {
                 return false;
             }
@@ -31,14 +31,14 @@ namespace Algorithms.TextProcessing.SuffixArrays
             return HasPattern(pattern, patternLcp);
         }
 
-        private bool HasPattern(string pattern, Lcp patternLcp)
+        private bool HasPattern(string pattern, LCP patternLcp)
         {
-            LcpNode currentNode = lcpTree.Root;
+            LCPNode currentNode = lcpTree.Root;
             var currentRange = new Range(0, suffixArray.Length - 1);
 
             while (currentRange.Length > 2)
             {
-                Lcp middleLcp = lcpTree.Lcp(currentNode, currentRange);
+                LCP middleLcp = lcpTree.Lcp(currentNode, currentRange);
 
                 if (patternLcp.Min < middleLcp.Min)
                 {
@@ -66,16 +66,16 @@ namespace Algorithms.TextProcessing.SuffixArrays
             return false;
         }
 
-        private bool CanContainPattern(string pattern, out Lcp patternLcp)
+        private bool CanContainPattern(string pattern, out LCP patternLcp)
         {
-            patternLcp = default(Lcp);
+            patternLcp = default(LCP);
 
             if (pattern.Length > text.Length)
             {
                 return false;
             }
 
-            patternLcp = new Lcp(ComputeLcp(suffixArray[0], pattern),
+            patternLcp = new LCP(ComputeLcp(suffixArray[0], pattern),
                 ComputeLcp(suffixArray[suffixArray.Length - 1], pattern));
 
             int leftTextIndex = suffixArray[0] + patternLcp.Left;
@@ -87,8 +87,8 @@ namespace Algorithms.TextProcessing.SuffixArrays
                        && pattern[patternLcp.Right] < text[rightTextIndex]);
         }
 
-        private bool TryFindPattern(string pattern, Lcp middleLcp, ref LcpNode currentNode,
-            ref Range currentRange, ref Lcp patternLcp)
+        private bool TryFindPattern(string pattern, LCP middleLcp, ref LCPNode currentNode,
+            ref Range currentRange, ref LCP patternLcp)
         {
             int lcp = patternLcp.Max;
             lcp += ComputeLcp(suffixArray[currentRange.Middle] + lcp, pattern, lcp);

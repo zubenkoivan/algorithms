@@ -1,17 +1,17 @@
 ﻿namespace Algorithms.TextProcessing.SuffixArrays
 {
-    internal struct LcpNode
+    internal struct LCPNode
     {
         public readonly int LeftChild;
         public readonly int Lcp;
 
-        public LcpNode(int leftChild, int lcp)
+        public LCPNode(int leftChild, int lcp)
         {
             LeftChild = leftChild;
             Lcp = lcp;
         }
 
-        public LcpNode(int lcp)
+        public LCPNode(int lcp)
         {
             LeftChild = -1;
             Lcp = lcp;

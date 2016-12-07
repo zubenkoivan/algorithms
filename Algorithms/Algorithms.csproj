@@ -51,7 +51,7 @@
     <Compile Include="TextProcessing\PatternMatching\AhoCorasickAlgorithm\Trie.cs" />
     <Compile Include="TextProcessing\PatternMatching\AhoCorasickAlgorithm\TrieNode.cs" />
     <Compile Include="TextProcessing\PatternMatching\KnuthMorrisPrattAlgorithm\PrefixFunction.cs" />
-    <Compile Include="TextProcessing\LCPArrays\ILcpArrayConstructor.cs" />
+    <Compile Include="TextProcessing\LCPArrays\ILCPArrayConstructor.cs" />
     <Compile Include="TextProcessing\LCPArrays\Kasai\KasaiConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\ISuffixArrayConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarkkainenSanders\KarkkainenSandersConstructor.cs" />

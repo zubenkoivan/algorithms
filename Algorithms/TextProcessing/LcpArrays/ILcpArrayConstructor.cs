@@ -1,4 +1,4 @@
-﻿namespace Algorithms.TextProcessing.LcpArrays
+﻿namespace Algorithms.TextProcessing.LCPArrays
 {
     public interface ILCPArrayConstructor
     {

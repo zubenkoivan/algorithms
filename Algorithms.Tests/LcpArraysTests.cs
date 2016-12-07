@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Algorithms.Tests
 {
-    public class LcpArraysTests
+    public class LCPArraysTests
     {
         [Fact]
         public void Should_Create_LCP_Array_With_Kasai_Algorithm()

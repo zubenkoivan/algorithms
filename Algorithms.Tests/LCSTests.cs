@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Algorithms.Tests
 {
-    public class LISTests
+    public class LCSTests
     {
         [Fact]
         public void Should_Find_Lis()

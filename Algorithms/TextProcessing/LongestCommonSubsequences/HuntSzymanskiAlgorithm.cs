@@ -14,7 +14,7 @@ namespace Algorithms.TextProcessing.LongestCommonSubsequences
 
         public T[] FindLCS(T[] sequence1, T[] sequence2)
         {
-            int[] matchIndexes = CreateSequencesMatchIndexes(sequence1, sequence2);
+            int[] matchIndexes = CreateMatchIndexes(sequence1, sequence2);
             int[] lis = LIS<int>.Find(matchIndexes);
 
             var lcs = new T[lis.Length];
@@ -27,17 +27,39 @@ namespace Algorithms.TextProcessing.LongestCommonSubsequences
             return lcs;
         }
 
-        private int[] CreateSequencesMatchIndexes(T[] sequence1, T[] sequence2)
+        private int[] CreateMatchIndexes(T[] sequence1, T[] sequence2)
         {
-            var indexes = new Dictionary<T, List<int>>(comparer);
+            Dictionary<T, List<int>> reversedIndexes = CreateReversedMatchIndexesMap(sequence1, sequence2);
+            int resultLength = 0;
+
+            for (int i = 0; i < sequence1.Length; ++i)
+            {
+                resultLength += reversedIndexes[sequence1[i]].Count;
+            }
+
+            var result = new int[resultLength];
+
+            for (int i = sequence1.Length - 1; i >= 0; --i)
+            {
+                List<int> indexes = reversedIndexes[sequence1[i]];
+                resultLength -= indexes.Count;
+                indexes.CopyTo(result, resultLength);
+            }
+
+            return result;
+        }
+
+        private Dictionary<T, List<int>> CreateReversedMatchIndexesMap(T[] sequence1, T[] sequence2)
+        {
+            var matchIndexes = new Dictionary<T, List<int>>(comparer);
 
             for (int i = 0; i < sequence1.Length; ++i)
             {
                 T key = sequence1[i];
 
-                if (!indexes.ContainsKey(key))
+                if (!matchIndexes.ContainsKey(key))
                 {
-                    indexes[key] = new List<int>();
+                    matchIndexes[key] = new List<int>();
                 }
             }
 
@@ -45,20 +67,13 @@ namespace Algorithms.TextProcessing.LongestCommonSubsequences
             {
                 T key = sequence2[i];
 
-                if (indexes.ContainsKey(key))
+                if (matchIndexes.ContainsKey(key))
                 {
-                    indexes[key].Add(i);
+                    matchIndexes[key].Add(i);
                 }
             }
 
-            var result = new List<int>();
-
-            for (int i = 0; i < sequence1.Length; ++i)
-            {
-                result.AddRange(indexes[sequence1[i]]);
-            }
-
-            return result.ToArray();
+            return matchIndexes;
         }
     }
 }

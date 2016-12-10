@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Algorithms.SortedArraysMerging;
 using Algorithms.Sorting;
 
@@ -60,9 +61,8 @@ namespace Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders
 
             FillSuffixArray2(symbols, ranks01);
 
-            SortedArrays.Merge(suffixArray, suffixArray01Start, symbols.Length01,
-                suffixArray2, 0, symbols.Length2,
-                (s01, s2) => Compare(s01, s2, symbols, ranks01));
+            SortedArrays.MergeInPlace(suffixArray, suffixArray01Start, symbols.Length01,
+                suffixArray2, 0, symbols.Length2, Comparer<int>.Create((s01, s2) => Compare(s01, s2, symbols, ranks01)));
         }
 
         private void CreateSimpleSuffixArray(SymbolsCollection symbols)

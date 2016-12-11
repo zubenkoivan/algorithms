@@ -5,9 +5,6 @@ namespace Algorithms.SortedArraysMerging
 {
     public static class SortedArrays
     {
-        private const int AllElementsGreater = -2;
-        private const int AllElementsLess = -1;
-
         public static void MergeInPlace<T>(T[] array1, int start1, int length1,
             T[] array2, int start2, int length2)
             where T : IComparable<T>
@@ -37,54 +34,57 @@ namespace Algorithms.SortedArraysMerging
             int end1 = start1 + length1 - 1;
             int end2 = start2 + length2 - 1;
 
-            if (length2 < length1)
+            if (comparer.Compare(array1[end1], array2[start2]) <= 0)
             {
-                MergeInPlace(array1, mergeStart, array1, start1, end1, array2, start2, end2, comparer);
+                Array.Copy(array1, start1, array1, mergeStart, length1);
+                Array.Copy(array2, start2, array1, mergeStart + length1, length2);
+                return;
             }
-            else
+
+            if (comparer.Compare(array2[end2], array1[start1]) <= 0)
             {
-                MergeInPlace(array1, mergeStart, array2, start2, end2, array1, start1, end1, comparer);
+                Array.Copy(array2, start2, array1, mergeStart, length2);
+                return;
             }
+
+            MergeInPlaceImpl(array1, mergeStart, array1, start1, end1, array2, start2, end2, comparer);
         }
 
-        private static void MergeInPlace<T>(T[] mergeArray, int mergeStart,
+        private static void MergeInPlaceImpl<T>(T[] mergeArray, int mergeStart,
             T[] array1, int start1, int end1,
             T[] array2, int start2, int end2,
             IComparer<T> comparer)
         {
-            for (int i = start2; i <= end2; ++i)
+            for (; start2 <= end2; ++start2)
             {
-                int lastLess = FindLastLess(array2[i], array1, start1, end1, comparer);
-
-                if (lastLess == AllElementsGreater)
+                if (end1 - start1 < end2 - start2)
                 {
-                    mergeArray[mergeStart] = array2[i];
-                    ++mergeStart;
-                    continue;
+                    Swap(ref array1, ref array2);
+                    Swap(ref start1, ref start2);
+                    Swap(ref end1, ref end2);
                 }
 
-                int length1;
+                int lastLess = FindLastLess(array2[start2], array1, start1, end1, comparer);
 
-                if (lastLess == AllElementsLess)
+                if (lastLess != -1)
                 {
-                    length1 = end1 - start1 + 1;
+                    int length1 = lastLess - start1 + 1;
+                    int length2 = end2 - start2 + 1;
 
-                    if (length1 > 0)
+                    Array.Copy(array1, start1, mergeArray, mergeStart, length1);
+                    mergeStart += length1;
+                    start1 += length1;
+
+                    if (lastLess == end1 || comparer.Compare(array2[end2], array1[start1]) <= 0)
                     {
-                        Array.Copy(array1, start1, mergeArray, mergeStart, length1);
-                        mergeStart += length1;
-                        start1 += length1;
+                        Array.Copy(array2, start2, mergeArray, mergeStart, length2);
+                        mergeStart += length2;
+                        break;
                     }
-
-                    Array.Copy(array2, i, mergeArray, mergeStart, end2 - i + 1);
-                    break;
                 }
 
-                length1 = lastLess - start1 + 1;
-                Array.Copy(array1, start1, mergeArray, mergeStart, length1);
-                mergeArray[mergeStart + length1] = array2[i];
-                mergeStart += length1 + 1;
-                start1 += length1;
+                mergeArray[mergeStart] = array2[start2];
+                ++mergeStart;
             }
 
             if (start1 <= end1)
@@ -93,11 +93,18 @@ namespace Algorithms.SortedArraysMerging
             }
         }
 
+        private static void Swap<T>(ref T arg1, ref T arg2)
+        {
+            T tmp = arg1;
+            arg1 = arg2;
+            arg2 = tmp;
+        }
+
         private static int FindLastLess<T>(T element, T[] array, int start, int end, IComparer<T> comparer)
         {
             if (comparer.Compare(element, array[start]) <= 0)
             {
-                return AllElementsGreater;
+                return -1;
             }
 
             for (int i = start + 1; i <= end; i = 2 * i - start + 1)
@@ -110,7 +117,7 @@ namespace Algorithms.SortedArraysMerging
                 return BinarySearchLastLess(element, array, (i + start) / 2, i, comparer);
             }
 
-            return AllElementsLess;
+            return end;
         }
 
         private static int BinarySearchLastLess<T>(T element, T[] array, int start, int end, IComparer<T> comparer)

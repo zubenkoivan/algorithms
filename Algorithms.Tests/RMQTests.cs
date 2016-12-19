@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using Algorithms.RangeMinimumQuery;
+﻿using Algorithms.RangeMinimumQuery;
 using Algorithms.RangeMinimumQuery.FarachColtonBender;
-using FluentAssertions;
+using Algorithms.RangeMinimumQuery.RMQToLCA;
 using Xunit;
 
 namespace Algorithms.Tests
@@ -10,7 +9,12 @@ namespace Algorithms.Tests
     {
         public static readonly int[] Array =
         {
-            49, 58, 53, 37, 77, 79, 93, 87, 28, 37, 77, 79
+            49, 58, 53, 37, 77, 79, 93, 87, 28, 37, 77, 79, 15, 68, 16, 26, 64, 27, 55, 80, 13, 20, 48, 64, 59, 48, 67,
+            64, 80, 64, 41, 76, 22, 17, 56, 56, 69, 30, 68, 33, 92, 26, 77, 82, 92, 37, 90, 51, 96, 68, 90, 72, 39, 22,
+            50, 92, 37, 74, 92, 89, 14, 20, 53, 31, 30, 63, 59, 25, 52, 85, 94, 73, 62, 66, 96, 50, 43, 73, 51, 65, 73,
+            89, 99, 94, 77, 11, 60, 26, 64, 94, 47, 28, 54, 43, 26, 17, 35, 97, 25, 22, 81, 75, 11, 57, 89, 21, 70, 51,
+            36, 83, 49, 51, 92, 89, 14, 20, 53, 31, 30, 63, 59, 25, 52, 85, 94, 73, 62, 66, 96, 50, 43, 73, 51, 65, 73,
+            89, 99, 94, 77, 11, 60, 26, 64, 94, 47, 28, 54, 43, 26, 17, 35, 97, 25, 22, 81, 75, 11, 57, 89, 21, 70, 51
         };
 
         public static readonly int[] ArrayPlusMinus1BlockSize2 =
@@ -29,23 +33,19 @@ namespace Algorithms.Tests
             38, 39, 40, 41
         };
 
-        public static readonly object[][] ArraysPlusMinus1 =
-        {
-            new object[] { ArrayPlusMinus1BlockSize2 },
-            new object[] { ArrayPlusMinus1BlockSize4 },
-        };
-
         public static TestResult RunTest(RMQ rmq, int[] array)
         {
             TestResult testResult = TestResult.Success;
 
             for (int i = 0; i < array.Length; ++i)
             {
+                var expected = new Minimum(i, array[i]);
+
                 for (int j = i; j < array.Length; ++j)
                 {
-                    int expected = array.Where((x, index) => index >= i && index <= j).Min();
+                    expected = array[j] < expected.Value ? new Minimum(j, array[j]) : expected;
 
-                    testResult.Combine(TestResult.RunTest(expected, rmq[i, j], $"For {i},{j}:"));
+                    testResult.Combine(TestResult.RunTest(expected, () => rmq[i, j], $"For {i},{j}"));
                 }
             }
 
@@ -59,17 +59,37 @@ namespace Algorithms.Tests
 
             TestResult testResult = RunTest(rmq, Array);
 
-            testResult.ShouldBeEquivalentTo(TestResult.Success);
+            testResult.AssertSuccess();
         }
 
-        [Theory, MemberData(nameof(ArraysPlusMinus1))]
-        public void Should_Find_Plus_Minus_1_RMQ(int[] array)
+        [Fact]
+        public void Should_Find_RMQ_Complex()
         {
-            var rmq = new PlusMinus1RMQ(array);
+            var rmq = new ComplexRMQ(Array);
 
-            TestResult testResult = RunTest(rmq, array);
+            TestResult testResult = RunTest(rmq, Array);
 
-            testResult.ShouldBeEquivalentTo(TestResult.Success);
+            testResult.AssertSuccess();
+        }
+
+        [Fact]
+        public void Should_Find_Plus_Minus_1_RMQ_Block_2()
+        {
+            var rmq = new PlusMinus1RMQ(ArrayPlusMinus1BlockSize2);
+
+            TestResult testResult = RunTest(rmq, ArrayPlusMinus1BlockSize2);
+
+            testResult.AssertSuccess();
+        }
+
+        [Fact]
+        public void Should_Find_Plus_Minus_1_RMQ_Block_4()
+        {
+            var rmq = new PlusMinus1RMQ(ArrayPlusMinus1BlockSize4);
+
+            TestResult testResult = RunTest(rmq, ArrayPlusMinus1BlockSize4);
+
+            testResult.AssertSuccess();
         }
     }
 }

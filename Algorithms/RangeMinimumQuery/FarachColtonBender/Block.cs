@@ -4,12 +4,12 @@ namespace Algorithms.RangeMinimumQuery.FarachColtonBender
 {
     internal struct Block
     {
-        private readonly int first;
+        private readonly int firstIndex;
         private readonly int mask;
 
         public Block(int[] source, int firstIndex, int maskSize)
         {
-            first = source[firstIndex];
+            this.firstIndex = firstIndex;
 
             int blockSize = Math.Min(maskSize + 1, source.Length - firstIndex);
             int nextLeftBorder = firstIndex + blockSize;
@@ -27,21 +27,30 @@ namespace Algorithms.RangeMinimumQuery.FarachColtonBender
             mask |= ~(-1 >> lengthDiff);
         }
 
-        public int FindMin(int[][][] blockMinHeights, int i, int j)
+        public Minimum FindMin(int[] source, int[][][] blockMinIndexes, int i, int j)
         {
-            if (i == 0)
+            i -= firstIndex;
+            j -= firstIndex;
+
+            if (i != 0)
             {
-                return j == 0
-                    ? first
-                    : Math.Min(first, first + blockMinHeights[mask][0][j - 1]);
+                int minIndex = firstIndex + blockMinIndexes[mask][i - 1][j - i];
+                return new Minimum(minIndex, source[minIndex]);
             }
 
-            return first + blockMinHeights[mask][i - 1][j - i];
+            if (j == 0)
+            {
+                return new Minimum(firstIndex, source[firstIndex]);
+            }
+
+            int index = firstIndex + blockMinIndexes[mask][0][j - 1];
+
+            return Minimum.Min(new Minimum(firstIndex, source[firstIndex]), new Minimum(index, source[index]));
         }
 
         public override string ToString()
         {
-            return $"{first},{Convert.ToString(mask, 2)}";
+            return $"{firstIndex},{Convert.ToString(mask, 2)}";
         }
     }
 }

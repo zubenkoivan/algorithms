@@ -99,6 +99,7 @@
     <Compile Include="SuffixArraysTests.cs" />
     <Compile Include="SuffixTreesTests.cs" />
     <Compile Include="TestData.cs" />
+    <Compile Include="TestFailException.cs" />
     <Compile Include="TestResult.cs" />
   </ItemGroup>
   <ItemGroup>

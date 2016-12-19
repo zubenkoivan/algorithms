@@ -8,8 +8,8 @@ namespace Algorithms.Tests
     {
         public static TestResult Success => new TestResult();
 
-        public bool IsSuccess { get; private set; } = true;
-        public List<string> Errors { get; } = new List<string>();
+        private bool IsSuccess { get; set; } = true;
+        private List<string> Errors { get; } = new List<string>();
 
         private TestResult()
         {
@@ -33,15 +33,27 @@ namespace Algorithms.Tests
             Errors.AddRange(testResult.Errors);
         }
 
-        public static TestResult RunTest<TResult>(TResult expected, TResult actual, string message)
+        public void AssertSuccess()
+        {
+            if (IsSuccess)
+            {
+                return;
+            }
+
+            throw new TestFailException($"Total errors count: {Errors.Count}\r\n" + string.Join("\r\n", Errors));
+        }
+
+        public static TestResult RunTest<TResult>(TResult expected, Func<TResult> actual, string message)
         {
             var testResult = new TestResult();
 
             try
             {
-                if (!Equivalent(actual, expected))
+                TResult actualResult = actual();
+
+                if (!Equivalent(actualResult, expected))
                 {
-                    testResult.AddError($"{message}: expected {expected}, but was {actual}");
+                    testResult.AddError($"{message}: expected {expected}, but was {actualResult}");
                 }
             }
             catch (Exception e)

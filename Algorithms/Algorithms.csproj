@@ -48,6 +48,8 @@
     <Compile Include="BitOperations\LogBase2.cs" />
     <Compile Include="RangeMinimumQuery\FarachColtonBender\Block.cs" />
     <Compile Include="RangeMinimumQuery\FarachColtonBender\PlusMinus1RMQ.cs" />
+    <Compile Include="RangeMinimumQuery\Minimum.cs" />
+    <Compile Include="RangeMinimumQuery\RMQToLCA\ComplexRMQ.cs" />
     <Compile Include="RangeMinimumQuery\RMQ.cs" />
     <Compile Include="RangeMinimumQuery\SparseTableRMQ.cs" />
     <Compile Include="TextProcessing\LongestCommonSubsequences\HuntSzymanskiAlgorithm.cs" />
@@ -77,6 +79,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SortedArraysMerging\SortedArrays.cs" />
     <Compile Include="Sorting\RadixSort.cs" />
+    <Compile Include="Trees\Cartesian\CartesianNode.cs" />
+    <Compile Include="Trees\Cartesian\CartesianTree.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

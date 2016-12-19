@@ -7,7 +7,12 @@ namespace Algorithms.Tests
 {
     public class RMQTests
     {
-        public static readonly int[] Array =
+        public static readonly int[] ArraySmall =
+        {
+            49, 58, 53, 37, 77, 79, 93, 87, 28, 37, 77, 79
+        };
+
+        public static readonly int[] ArrayLarge =
         {
             49, 58, 53, 37, 77, 79, 93, 87, 28, 37, 77, 79, 15, 68, 16, 26, 64, 27, 55, 80, 13, 20, 48, 64, 59, 48, 67,
             64, 80, 64, 41, 76, 22, 17, 56, 56, 69, 30, 68, 33, 92, 26, 77, 82, 92, 37, 90, 51, 96, 68, 90, 72, 39, 22,
@@ -53,11 +58,11 @@ namespace Algorithms.Tests
         }
 
         [Fact]
-        public void Should_Find_RMQ()
+        public void Should_Find_RMQ_Sparse_Table()
         {
-            var rmq = new SparseTableRMQ(Array);
+            var rmq = new SparseTableRMQ(ArrayLarge);
 
-            TestResult testResult = RunTest(rmq, Array);
+            TestResult testResult = RunTest(rmq, ArrayLarge);
 
             testResult.AssertSuccess();
         }
@@ -65,9 +70,9 @@ namespace Algorithms.Tests
         [Fact]
         public void Should_Find_RMQ_Complex()
         {
-            var rmq = new ComplexRMQ(Array);
+            var rmq = new ComplexRMQ(ArrayLarge);
 
-            TestResult testResult = RunTest(rmq, Array);
+            TestResult testResult = RunTest(rmq, ArrayLarge);
 
             testResult.AssertSuccess();
         }

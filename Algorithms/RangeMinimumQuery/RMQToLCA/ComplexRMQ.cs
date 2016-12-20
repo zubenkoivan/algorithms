@@ -38,33 +38,33 @@ namespace Algorithms.RangeMinimumQuery.RMQToLCA
                 eulerTour[i] = level;
                 toSourceRanks[i] = currentNode;
 
-                if (treeNode.Left != lastVisitedNode && treeNode.Right != lastVisitedNode && treeNode.Left != -1)
+                if (!treeNode.HasChild(lastVisitedNode) && treeNode.HasLeft)
                 {
                     nextNode = treeNode.Left;
                     ++level;
                 }
-                else if (treeNode.Right != lastVisitedNode && treeNode.Right != -1)
+                else if (!treeNode.HasRightChild(lastVisitedNode) && treeNode.HasRight)
                 {
                     nextNode = treeNode.Right;
                     ++level;
                 }
 
-                lastVisitedNode = currentNode;
-                currentNode = nextNode;
-
-                if (currentNode == -1)
+                if (nextNode == -1)
                 {
-                    currentNode = treeNode.Parent;
+                    nextNode = treeNode.Parent;
                     --level;
                 }
+
+                lastVisitedNode = currentNode;
+                currentNode = nextNode;
             }
 
             return eulerTour;
         }
 
-        private static int[] InitFirstIndexes(int length)
+        private static int[] InitFirstIndexes(int sourceLength)
         {
-            var firstIndexes = new int[length];
+            var firstIndexes = new int[sourceLength];
 
             for (int i = 0; i < firstIndexes.Length; ++i)
             {
@@ -78,7 +78,7 @@ namespace Algorithms.RangeMinimumQuery.RMQToLCA
         {
             get
             {
-                if (i > j || j >= source.Length)
+                if (i > j)
                 {
                     throw new ArgumentOutOfRangeException(nameof(j));
                 }

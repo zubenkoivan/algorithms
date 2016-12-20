@@ -21,18 +21,18 @@
                 if (parent == -1)
                 {
                     tree[root] = tree[root].ChangeParent(i);
-                    tree[i] = new CartesianNode(parent, root, -1);
+                    tree[i] = new CartesianNode(parent, root);
                     root = i;
                     continue;
                 }
 
-                int parentRight = tree[parent].Right;
-                tree[i] = new CartesianNode(parent, parentRight, -1);
+                int parentRightChild = tree[parent].Right;
+                tree[i] = new CartesianNode(parent, parentRightChild);
                 tree[parent] = tree[parent].ChangeRightChild(i);
 
-                if (parentRight != -1)
+                if (parentRightChild != -1)
                 {
-                    tree[parentRight] = tree[parentRight].ChangeParent(i);
+                    tree[parentRightChild] = tree[parentRightChild].ChangeParent(i);
                 }
             }
 

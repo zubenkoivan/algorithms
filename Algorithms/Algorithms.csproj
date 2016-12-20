@@ -46,7 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitOperations\LogBase2.cs" />
-    <Compile Include="RangeMinimumQuery\FarachColtonBender\Block.cs" />
+    <Compile Include="RangeMinimumQuery\FarachColtonBender\MaskMins.cs" />
+    <Compile Include="RangeMinimumQuery\FarachColtonBender\Blocks.cs" />
     <Compile Include="RangeMinimumQuery\FarachColtonBender\PlusMinus1RMQ.cs" />
     <Compile Include="RangeMinimumQuery\Minimum.cs" />
     <Compile Include="RangeMinimumQuery\RMQToLCA\ComplexRMQ.cs" />

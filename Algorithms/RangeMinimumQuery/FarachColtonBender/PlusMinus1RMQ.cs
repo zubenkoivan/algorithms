@@ -4,47 +4,40 @@ namespace Algorithms.RangeMinimumQuery.FarachColtonBender
 {
     public class PlusMinus1RMQ : RMQ
     {
-        private readonly int[][][] blockMinIndexes;
-
-        private readonly int[] source;
-        private readonly int blockSize;
-        private readonly int[] blockMinRanks;
-        private readonly SparseTableRMQ blockSparseTable;
-        private readonly Block[] blocks;
+        private readonly int sourceLength;
+        private readonly int[] sparseTableRanks;
+        private readonly SparseTableRMQ sparseTable;
+        private readonly Blocks blocks;
 
         public PlusMinus1RMQ(int[] source)
         {
-            this.source = source;
-            blockSize = (int) Math.Round(Math.Log(source.Length, 2.0) / 2.0);
-            blockSparseTable = CreateBlockSparseTable(source, blockSize, out blockMinRanks);
+            sourceLength = source.Length;
+            int blockSize = (int) Math.Round(Math.Log(source.Length, 2.0) / 2.0);
 
             if (blockSize > 1)
             {
-                blockMinIndexes = CreateBlockMinIndexes(blockSize);
-                blocks = CreateBlocks(source, blockSize);
+                sparseTable = CreateSparseTable(source, blockSize, out sparseTableRanks);
+                blocks = new Blocks(source, blockSize);
+            }
+            else
+            {
+                sparseTable = new SparseTableRMQ(source);
             }
         }
 
-        private static SparseTableRMQ CreateBlockSparseTable(int[] source, int blockSize, out int[] blockMinRanks)
+        private static SparseTableRMQ CreateSparseTable(int[] source, int blockSize, out int[] ranks)
         {
-            if (blockSize <= 1)
-            {
-                blockMinRanks = null;
-                return new SparseTableRMQ(source);
-            }
-
             var blockMins = new int[(source.Length - 1) / blockSize + 1];
-            blockMinRanks = new int[blockMins.Length];
+            ranks = new int[blockMins.Length];
 
             for (int block = 0; block < blockMins.Length; ++block)
             {
                 int blockStart = block * blockSize;
+                int nextBlockStart = blockStart + Math.Min(blockSize, source.Length - blockStart);
                 int min = source[blockStart];
                 int minIndex = blockStart;
-                int blockLength = Math.Min(blockSize, source.Length - blockStart);
-                int nextLeftBorder = blockStart + blockLength;
 
-                for (int i = blockStart; i < nextLeftBorder; ++i)
+                for (int i = blockStart; i < nextBlockStart; ++i)
                 {
                     if (source[i] < min)
                     {
@@ -54,109 +47,49 @@ namespace Algorithms.RangeMinimumQuery.FarachColtonBender
                 }
 
                 blockMins[block] = min;
-                blockMinRanks[block] = minIndex;
+                ranks[block] = minIndex;
             }
 
             return new SparseTableRMQ(blockMins);
-        }
-
-        private static int[][][] CreateBlockMinIndexes(int blockSize)
-        {
-            int maskSize = blockSize - 1;
-            int mask = (int) Math.Pow(2.0, maskSize) - 1;
-            var blockRMQ = new int[mask + 1][][];
-
-            while (mask >= 0)
-            {
-                blockRMQ[mask] = CalculateMinIndexes(mask, maskSize);
-                --mask;
-            }
-
-            return blockRMQ;
-        }
-
-        private static int[][] CalculateMinIndexes(int mask, int maskSize)
-        {
-            var result = new int[maskSize][];
-
-            for (int i = 0; i < result.Length; ++i)
-            {
-                int arrayLength = maskSize - i;
-                var minIndexes = new int[arrayLength];
-                int minHeight = int.MaxValue;
-                int minIndex = int.MaxValue;
-                int currentHeight = 0;
-
-                for (int j = 0; j < arrayLength; ++j)
-                {
-                    int currentBit = (mask >> (arrayLength - j - 1)) & 1;
-                    currentHeight += currentBit + ~(currentBit ^ 1) + 1;
-
-                    if (currentHeight < minHeight)
-                    {
-                        minHeight = currentHeight;
-                        minIndex = i + j + 1;
-                    }
-
-                    minIndexes[j] = minIndex;
-                }
-
-                result[i] = minIndexes;
-            }
-
-            return result;
-        }
-
-        private static Block[] CreateBlocks(int[] source, int blockSize)
-        {
-            int blocksCount = (source.Length - 1) / blockSize + 1;
-            var blocks = new Block[blocksCount];
-            int maskSize = blockSize - 1;
-
-            for (int i = 0; i < blocksCount; ++i)
-            {
-                blocks[i] = new Block(source, i * blockSize, maskSize);
-            }
-
-            return blocks;
         }
 
         public override Minimum this[int i, int j]
         {
             get
             {
-                if (i > j || j >= source.Length)
+                if (i > j || j >= sourceLength)
                 {
                     throw new ArgumentOutOfRangeException(nameof(j));
                 }
 
-                return blockSize == 1 ? blockSparseTable[i, j] : FindMin(i, j);
+                return blocks == null ? sparseTable[i, j] : FindMin(i, j);
             }
         }
 
         public Minimum FindMin(int i, int j)
         {
-            int leftMostBlock = i / blockSize;
-            int rightMostBlock = j / blockSize;
+            int leftMostBlock = i / blocks.BlockSize;
+            int rightMostBlock = j / blocks.BlockSize;
+            int blockI = i - leftMostBlock * blocks.BlockSize;
+            int blockJ = j - rightMostBlock * blocks.BlockSize;
 
             if (leftMostBlock == rightMostBlock)
             {
-                return blocks[leftMostBlock].FindMin(source, blockMinIndexes, i, j);
+                return blocks.Min(leftMostBlock, blockI, blockJ);
             }
 
-            Minimum minPrefix = blocks[leftMostBlock].FindMin(source, blockMinIndexes, i, (leftMostBlock + 1) * blockSize - 1);
+            Minimum minPrefix = blocks.Min(leftMostBlock, blockI, blocks.BlockSize - 1);
             Minimum min = minPrefix;
 
             if (rightMostBlock - leftMostBlock > 1)
             {
-                Minimum minBody = blockSparseTable[leftMostBlock + 1, rightMostBlock - 1];
-
+                Minimum minBody = sparseTable[leftMostBlock + 1, rightMostBlock - 1];
                 min = minBody.Value < min.Value
-                    ? new Minimum(blockMinRanks[minBody.Index], minBody.Value)
+                    ? new Minimum(sparseTableRanks[minBody.Index], minBody.Value)
                     : min;
             }
 
-            Minimum minSuffix = blocks[rightMostBlock].FindMin(source, blockMinIndexes, rightMostBlock * blockSize, j);
+            Minimum minSuffix = blocks.Min(rightMostBlock, 0, blockJ);
 
             return Minimum.Min(min, minSuffix);
         }

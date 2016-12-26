@@ -61,6 +61,10 @@
     <Compile Include="TextProcessing\PatternMatching\KnuthMorrisPrattAlgorithm\PrefixFunction.cs" />
     <Compile Include="TextProcessing\LCPArrays\ILCPArrayConstructor.cs" />
     <Compile Include="TextProcessing\LCPArrays\Kasai\KasaiConstructor.cs" />
+    <Compile Include="TextProcessing\PatternMatching\LandauVishkinAlgorithm\ApproximateMatching.cs" />
+    <Compile Include="TextProcessing\PatternMatching\LandauVishkinAlgorithm\DiagonalLengths.cs" />
+    <Compile Include="TextProcessing\PatternMatching\LandauVishkinAlgorithm\Diagonals.cs" />
+    <Compile Include="TextProcessing\PatternMatching\LandauVishkinAlgorithm\PatternMatch.cs" />
     <Compile Include="TextProcessing\SuffixArrays\ISuffixArrayConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarkkainenSanders\KarkkainenSandersConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarkkainenSanders\SymbolsCollection.cs" />

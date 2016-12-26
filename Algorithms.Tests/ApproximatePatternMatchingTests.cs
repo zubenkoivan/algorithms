@@ -16,5 +16,16 @@ namespace Algorithms.Tests
 
             actual.ShouldBeEquivalentTo(new PatternMatch(matchIndex, matchLength));
         }
+
+        [Fact]
+        public void Should_Fail_To_Find_Pattern()
+        {
+            const string text = "acxabcyza";
+            const string pattern = "iuy";
+
+            PatternMatch actual = new ApproximateMatching(text, pattern).FindPattern(1);
+
+            actual.ShouldBeEquivalentTo(null);
+        }
     }
 }

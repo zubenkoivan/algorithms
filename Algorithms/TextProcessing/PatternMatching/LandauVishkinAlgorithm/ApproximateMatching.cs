@@ -14,8 +14,7 @@ namespace Algorithms.TextProcessing.PatternMatching.LandauVishkinAlgorithm
         private readonly RMQ lcpRmq;
         private readonly Diagonals diagonals;
 
-        private DiagonalLengths currentLengths;
-        private DiagonalLengths nextLengths;
+        private DiagonalLengths lengths;
         private int[] diagonalOrigins;
 
         public ApproximateMatching(string text, string pattern)
@@ -60,14 +59,12 @@ namespace Algorithms.TextProcessing.PatternMatching.LandauVishkinAlgorithm
                 throw new ArgumentOutOfRangeException(nameof(maxDistance));
             }
 
-            currentLengths = new DiagonalLengths(diagonals, suffixArrayRanks, lcpRmq);
-            nextLengths = new DiagonalLengths(diagonals, suffixArrayRanks, lcpRmq);
+            lengths = new DiagonalLengths(diagonals, suffixArrayRanks, lcpRmq);
             diagonalOrigins = new int[diagonals.Count];
 
             PatternMatch result = FindPatternImpl(maxDistance);
 
-            currentLengths = null;
-            nextLengths = null;
+            lengths = null;
             diagonalOrigins = null;
 
             return result;
@@ -77,30 +74,30 @@ namespace Algorithms.TextProcessing.PatternMatching.LandauVishkinAlgorithm
         {
             for (int k = 0; k <= maxDistance; ++k)
             {
-                for (int i = patternLength - k - 1; i < diagonals.Count; ++i)
+                int i = patternLength - k - 1;
+
+                for (; i < diagonals.Count && diagonals.IsStartingDistance(i, k); ++i)
                 {
-                    if (diagonals.IsStartingDistance(i, k))
+                    lengths.SkipLCP(i);
+                    diagonalOrigins[i] = i;
+
+                    if (lengths.IsMax(i) && diagonals.CanMatch(i))
                     {
-                        nextLengths.SkipLCP(i);
-                        diagonalOrigins[i] = i;
-
-                        if (nextLengths.IsMax(i) && diagonals.CanMatch(i))
-                        {
-                            return CreatePatternMatch(i);
-                        }
-
-                        continue;
+                        return CreatePatternMatch(i);
                     }
+                }
 
-                    int? diagonalMatch = IncreaseLengths(i);
+                int currentLength = i == diagonals.Count ? 0 : lengths[i];
+
+                for (; i < diagonals.Count; ++i)
+                {
+                    int? diagonalMatch = IncreaseLengths(i, ref currentLength);
 
                     if (diagonalMatch.HasValue)
                     {
                         return CreatePatternMatch(diagonalMatch.Value);
                     }
                 }
-
-                Swap(ref currentLengths, ref nextLengths);
             }
 
             return null;
@@ -109,49 +106,43 @@ namespace Algorithms.TextProcessing.PatternMatching.LandauVishkinAlgorithm
         private PatternMatch CreatePatternMatch(int diagonalMatch)
         {
             int diagonalOrigin = diagonalOrigins[diagonalMatch];
-            int length = diagonalOrigin == diagonalMatch
-                ? diagonals.MaxLength(diagonalOrigin)
-                : diagonalMatch + patternLength - diagonalOrigin;
+            int length = diagonalMatch + diagonals.MaxLength(diagonalOrigin) - diagonalOrigin;
             return new PatternMatch(diagonals.TextIndex(diagonalOrigin), length);
         }
 
-        private int? IncreaseLengths(int diagonal)
+        private int? IncreaseLengths(int diagonal, ref int currentLength)
         {
+            int diagonalOrigin = diagonalOrigins[diagonal];
+            int nextLength = currentLength + 1;
             int leftDiagonal = diagonal - 1;
-            int nextLength = currentLengths[diagonal] + 1;
             int leftNextLength = nextLength
                                  - diagonals.StartingDistance(leftDiagonal)
                                  + diagonals.StartingDistance(diagonal);
-            int diagonalOrigin = diagonalOrigins[diagonal];
+            int rightDiagonal = diagonal + 1;
+
+            currentLength = rightDiagonal == diagonals.Count ? 0 : lengths[rightDiagonal];
 
             return IncreaseLength(diagonalOrigin, leftDiagonal, leftNextLength) ??
                    IncreaseLength(diagonalOrigin, diagonal, nextLength) ??
-                   IncreaseLength(diagonalOrigin, diagonal + 1, nextLength - 1);
+                   IncreaseLength(diagonalOrigin, rightDiagonal, nextLength - 1);
         }
 
         private int? IncreaseLength(int diagonalOrigin, int diagonal, int nextLength)
         {
             if (!diagonals.IsInRange(diagonal)
-                || nextLength <= currentLengths[diagonal]
+                || nextLength <= lengths[diagonal]
                 || nextLength > diagonals.MaxLength(diagonal))
             {
                 return null;
             }
 
-            nextLengths[diagonal] = nextLength;
-            nextLengths.SkipLCP(diagonal);
+            lengths[diagonal] = nextLength;
+            lengths.SkipLCP(diagonal);
             diagonalOrigins[diagonal] = diagonalOrigin;
 
-            bool matched = nextLengths.IsMax(diagonal) && diagonals.CanMatch(diagonal);
+            bool matched = lengths.IsMax(diagonal) && diagonals.CanMatch(diagonal);
 
             return matched ? diagonal : (int?) null;
-        }
-
-        private static void Swap<T>(ref T arg1, ref T arg2)
-        {
-            T tmp = arg1;
-            arg1 = arg2;
-            arg2 = tmp;
         }
     }
 }

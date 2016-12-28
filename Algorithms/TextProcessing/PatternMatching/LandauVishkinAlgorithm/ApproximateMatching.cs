@@ -106,7 +106,7 @@ namespace Algorithms.TextProcessing.PatternMatching.LandauVishkinAlgorithm
         private PatternMatch CreatePatternMatch(int diagonalMatch)
         {
             int diagonalOrigin = diagonalOrigins[diagonalMatch];
-            int length = diagonalMatch + diagonals.MaxLength(diagonalOrigin) - diagonalOrigin;
+            int length = diagonals.MaxLength(diagonalOrigin) + diagonalMatch - diagonalOrigin;
             return new PatternMatch(diagonals.TextIndex(diagonalOrigin), length);
         }
 

@@ -47,7 +47,7 @@ namespace Algorithms.RangeMinimumQuery.FarachColtonBender
 
             int lengthDiff = maskSize - blockSize + 1;
             mask <<= lengthDiff;
-            mask |= ~(-1 >> lengthDiff);
+            mask |= ~(-1 << lengthDiff);
 
             return mask;
         }

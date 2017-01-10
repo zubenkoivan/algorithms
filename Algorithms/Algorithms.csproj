@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BitOperations\BitsSet.cs" />
     <Compile Include="BitOperations\LogBase2.cs" />
     <Compile Include="RangeMinimumQuery\FarachColtonBender\MaskMins.cs" />
     <Compile Include="RangeMinimumQuery\FarachColtonBender\Blocks.cs" />
@@ -53,6 +54,15 @@
     <Compile Include="RangeMinimumQuery\RMQToLCA\ComplexRMQ.cs" />
     <Compile Include="RangeMinimumQuery\RMQ.cs" />
     <Compile Include="RangeMinimumQuery\SparseTableRMQ.cs" />
+    <Compile Include="Sorting\NumbersCounts.cs" />
+    <Compile Include="TextProcessing\BurrowsWheelerTransforms\BurrowsWheelerInverseTransform.cs" />
+    <Compile Include="TextProcessing\BurrowsWheelerTransforms\PatternMatching\BinaryRank.cs" />
+    <Compile Include="TextProcessing\BurrowsWheelerTransforms\PatternMatching\BurrowsWheelerPatternMatcher.cs" />
+    <Compile Include="TextProcessing\BurrowsWheelerTransforms\BurrowsWheelerTransform.cs" />
+    <Compile Include="TextProcessing\BurrowsWheelerTransforms\PatternMatching\Range.cs" />
+    <Compile Include="TextProcessing\BurrowsWheelerTransforms\PatternMatching\SigmaRanges.cs" />
+    <Compile Include="TextProcessing\BurrowsWheelerTransforms\PatternMatching\TreeNode.cs" />
+    <Compile Include="TextProcessing\BurrowsWheelerTransforms\PatternMatching\WaveletTree.cs" />
     <Compile Include="TextProcessing\LongestCommonSubsequences\HuntSzymanskiAlgorithm.cs" />
     <Compile Include="TextProcessing\LongestIncreasingSubsequences\LIS.cs" />
     <Compile Include="TextProcessing\PatternMatching\AhoCorasickAlgorithm\PatternLocation.cs" />
@@ -67,6 +77,7 @@
     <Compile Include="TextProcessing\PatternMatching\LandauVishkinAlgorithm\PatternMatch.cs" />
     <Compile Include="TextProcessing\SuffixArrays\ISuffixArrayConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarkkainenSanders\KarkkainenSandersConstructor.cs" />
+    <Compile Include="TextProcessing\SuffixArrays\KarkkainenSanders\KarkkainenSandersSuffixArray.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarkkainenSanders\SymbolsCollection.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarpMillerRosenberg\KarpMillerRosenbergConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarpMillerRosenberg\LabelsPair.cs" />

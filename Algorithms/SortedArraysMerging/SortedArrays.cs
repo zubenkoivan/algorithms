@@ -41,7 +41,7 @@ namespace Algorithms.SortedArraysMerging
                 return;
             }
 
-            if (comparer.Compare(array2[end2], array1[start1]) <= 0)
+            if (comparer.Compare(array1[start1], array2[end2]) >= 0)
             {
                 Array.Copy(array2, start2, array1, mergeStart, length2);
                 return;
@@ -75,7 +75,7 @@ namespace Algorithms.SortedArraysMerging
                     mergeStart += length1;
                     start1 += length1;
 
-                    if (lastLess == end1 || comparer.Compare(array2[end2], array1[start1]) <= 0)
+                    if (lastLess == end1 || comparer.Compare(array1[start1], array2[end2]) >= 0)
                     {
                         Array.Copy(array2, start2, mergeArray, mergeStart, length2);
                         mergeStart += length2;
@@ -100,48 +100,50 @@ namespace Algorithms.SortedArraysMerging
             arg2 = tmp;
         }
 
-        private static int FindLastLess<T>(T element, T[] array, int start, int end, IComparer<T> comparer)
+        private static int FindLastLess<T>(T element2, T[] array1, int start1, int end1, IComparer<T> comparer)
         {
-            if (comparer.Compare(element, array[start]) <= 0)
+            int element1Index = start1;
+
+            if (comparer.Compare(array1[element1Index], element2) >= 0)
             {
                 return -1;
             }
 
-            for (int i = start + 1; i <= end; i = 2 * i - start + 1)
+            do
             {
-                if (comparer.Compare(element, array[i]) > 0)
+                element1Index = Math.Min(2 * element1Index - start1 + 1, end1);
+
+                if (comparer.Compare(array1[element1Index], element2) >= 0)
                 {
-                    continue;
+                    return BinarySearchLastLess(element2, array1, (element1Index + start1) / 2, element1Index, comparer);
                 }
+            } while (element1Index < end1);
 
-                return BinarySearchLastLess(element, array, (i + start) / 2, i, comparer);
-            }
-
-            return end;
+            return end1;
         }
 
-        private static int BinarySearchLastLess<T>(T element, T[] array, int start, int end, IComparer<T> comparer)
+        private static int BinarySearchLastLess<T>(T element2, T[] array1, int start1, int end1, IComparer<T> comparer)
         {
-            if (end - start == 0)
+            if (end1 - start1 == 0)
             {
-                return start;
+                return start1;
             }
 
-            while (end - start > 1)
+            while (end1 - start1 > 1)
             {
-                int middle = (start + end) / 2;
+                int middle = (start1 + end1) / 2;
 
-                if (comparer.Compare(element, array[middle]) <= 0)
+                if (comparer.Compare(array1[middle], element2) >= 0)
                 {
-                    end = middle;
+                    end1 = middle;
                 }
                 else
                 {
-                    start = middle;
+                    start1 = middle;
                 }
             }
 
-            return comparer.Compare(element, array[start]) <= 0 ? start - 1 : start;
+            return comparer.Compare(array1[start1], element2) >= 0 ? start1 - 1 : start1;
         }
     }
 }

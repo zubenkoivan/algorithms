@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Buffers;
 
 namespace Algorithms.Sorting
 {
     public static class RadixSort
     {
-        private const int Base = 1000000;
-        private static readonly ArrayPool<int> NumbersCountsPool = ArrayPool<int>.Create();
+        private const int Base = 1000;
 
         public static void Sort<TElement>(TElement[] array, Func<TElement, int> toInt)
         {
@@ -22,12 +20,12 @@ namespace Algorithms.Sorting
         {
             if (array.Length < length)
             {
-                throw new ArgumentException($"Array is less than {length}", nameof(array));
+                throw new ArgumentException($"Array is less than {nameof(length)}({length})", nameof(array));
             }
 
             if (buffer.Length < length)
             {
-                throw new ArgumentException($"Buffer array is less than {length}", nameof(buffer));
+                throw new ArgumentException($"Buffer array is less than {nameof(length)}({length})", nameof(buffer));
             }
 
             if (toInt == null)
@@ -36,17 +34,17 @@ namespace Algorithms.Sorting
             }
 
             TElement[] source = array;
-            int[] numbersCounts = NumbersCountsPool.Rent(Base);
             bool canContinue = true;
+            var countingSortContext = new NumbersCounts<TElement>(Base, toInt);
 
-            for (int i = 0; canContinue; ++i)
+            Swap(ref source, ref buffer);
+
+            while (canContinue)
             {
-                canContinue = CountingSort(source, buffer, length, numbersCounts, toInt, i);
                 Swap(ref source, ref buffer);
-                Array.Clear(numbersCounts, 0, Base);
+                canContinue = CountingSort(source, buffer, length, countingSortContext);
+                countingSortContext.Next();
             }
-
-            NumbersCountsPool.Return(numbersCounts);
 
             if (source != array)
             {
@@ -54,40 +52,40 @@ namespace Algorithms.Sorting
             }
         }
 
-        private static bool CountingSort<TElement>(TElement[] source, TElement[] dest, int length,
-            int[] numbersCounts, Func<TElement, int> toInt, int iteration)
-        {
-            int m = (int) Math.Pow(Base, iteration + 1);
-            int n = m / Base;
-            int maxNumber = 0;
-
-            for (int i = 0; i < length; ++i)
-            {
-                int number = toInt(source[i]) % m / n;
-                ++numbersCounts[number];
-                maxNumber = Math.Max(maxNumber, number);
-            }
-
-            for (int i = 1; i <= maxNumber; i++)
-            {
-                numbersCounts[i] += numbersCounts[i - 1];
-            }
-
-            for (int i = length - 1; i >= 0; --i)
-            {
-                int number = toInt(source[i]) % m / n;
-                --numbersCounts[number];
-                dest[numbersCounts[number]] = source[i];
-            }
-
-            return maxNumber >= Base / 10;
-        }
-
         private static void Swap<T>(ref T arg1, ref T arg2)
         {
             T temp = arg1;
             arg1 = arg2;
             arg2 = temp;
+        }
+
+        private static bool CountingSort<TElement>(TElement[] source, TElement[] dest, int length,
+            NumbersCounts<TElement> context)
+        {
+            for (int i = 0; i < length; ++i)
+            {
+                ++context.Counts[context.GetNumber(source[i])];
+            }
+
+            if (context.Counts[0] == length)
+            {
+                return false;
+            }
+
+            for (int i = 1; i < Base; ++i)
+            {
+                context.Counts[i] += context.Counts[i - 1];
+            }
+
+            for (int i = length - 1; i >= 0; --i)
+            {
+                TElement element = source[i];
+                int number = context.GetNumber(element);
+                --context.Counts[number];
+                dest[context.Counts[number]] = element;
+            }
+
+            return true;
         }
     }
 }

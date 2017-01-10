@@ -16,7 +16,7 @@ namespace Algorithms.Tests
 
             RadixSort.Sort(array, x => x);
 
-            expected.ShouldBeEquivalentTo(array);
+            expected.ShouldBeEquivalentTo(array, config => config.WithStrictOrdering());
         }
 
         private static int[] GenerateRandomArray()

@@ -3,7 +3,7 @@ using System.Text;
 using Algorithms.RangeMinimumQuery;
 using Algorithms.RangeMinimumQuery.RMQToLCA;
 using Algorithms.TextProcessing.LCPArrays.Kasai;
-using Algorithms.TextProcessing.SuffixArrays.KarpMillerRosenberg;
+using Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders;
 
 namespace Algorithms.TextProcessing.PatternMatching.LandauVishkinAlgorithm
 {
@@ -23,7 +23,7 @@ namespace Algorithms.TextProcessing.PatternMatching.LandauVishkinAlgorithm
             diagonals = new Diagonals(text.Length, patternLength);
 
             string combinedText = Combine(text, pattern);
-            int[] suffixArray = new KarpMillerRosenbergConstructor().Create(combinedText);
+            int[] suffixArray = new KarkkainenSandersConstructor().Create(combinedText);
             int[] lcpArray = new KasaiConstructor().Create(combinedText, suffixArray);
             suffixArrayRanks = CreateRanks(suffixArray);
             lcpRmq = new ComplexRMQ(lcpArray);
@@ -142,7 +142,7 @@ namespace Algorithms.TextProcessing.PatternMatching.LandauVishkinAlgorithm
 
             bool matched = lengths.IsMax(diagonal) && diagonals.CanMatch(diagonal);
 
-            return matched ? diagonal : (int?) null;
+            return matched ? diagonal : (int?)null;
         }
     }
 }

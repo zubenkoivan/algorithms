@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Algorithms.TextProcessing.LCPArrays;
 using Algorithms.TextProcessing.SuffixArrays;
 using Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders;
@@ -34,12 +35,21 @@ namespace Algorithms.Tests
         }
 
         [Theory, MemberData(nameof(Constructors))]
-        public void Should_Create_Suffix_Array(ISuffixArrayConstructor constructor)
+        public void Should_Create_Suffix_Array_Of_Short_Text(ISuffixArrayConstructor constructor)
+        {
+            const string text = "abacaba";
+            int[] actualSuffixArray = constructor.Create(text);
+
+            actualSuffixArray.ShouldBeEquivalentTo(ExpectedSuffixArray(text), config => config.WithStrictOrdering());
+        }
+
+        [Theory, MemberData(nameof(Constructors))]
+        public void Should_Create_Suffix_Array_Of_Long_Text(ISuffixArrayConstructor constructor)
         {
             const string text = TestData.Text;
             int[] actualSuffixArray = constructor.Create(text);
 
-            actualSuffixArray.ShouldBeEquivalentTo(ExpectedSuffixArray(text));
+            actualSuffixArray.ShouldBeEquivalentTo(ExpectedSuffixArray(text), config => config.WithStrictOrdering());
         }
 
         private static int[] ExpectedSuffixArray(string text)
@@ -50,7 +60,7 @@ namespace Algorithms.Tests
                     Index = i,
                     Suffix = text.Substring(i)
                 })
-                .OrderBy(x => x.Suffix)
+                .OrderBy(x => x.Suffix, StringComparer.Ordinal)
                 .Select(x => x.Index)
                 .ToArray();
         }

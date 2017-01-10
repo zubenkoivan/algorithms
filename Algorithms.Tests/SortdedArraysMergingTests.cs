@@ -16,7 +16,7 @@ namespace Algorithms.Tests
 
             int[] expected = { 1, 3, 5, 6, 7, 8, 9, 11 };
 
-            array1.ShouldBeEquivalentTo(expected);
+            array1.ShouldBeEquivalentTo(expected, config => config.WithStrictOrdering());
         }
     }
 }

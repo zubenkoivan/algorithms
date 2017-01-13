@@ -11,5 +11,10 @@
 
             return count;
         }
+
+        public static int Count(ulong value)
+        {
+            return Count((int) value) + Count((int) (value >> 32));
+        }
     }
 }

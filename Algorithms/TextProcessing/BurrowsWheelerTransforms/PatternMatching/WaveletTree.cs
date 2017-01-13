@@ -22,6 +22,7 @@
                 int middle = (start + end) / 2;
                 int binarySymbol = symbol > sigma[middle] ? 1 : 0;
                 int binarySymbolRank = currentNode.Rank(binarySymbol, prefixLength);
+
                 prefixLength = binarySymbolRank;
 
                 if (prefixLength == 0)

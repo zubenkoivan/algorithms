@@ -59,7 +59,6 @@ namespace Algorithms.TextProcessing.BurrowsWheelerTransforms.PatternMatching
             for (int i = pattern.Length - 2; i >= 0; --i)
             {
                 char symbol = pattern[i];
-
                 int skip = waveletTree.Rank(symbol, range.Start);
                 int count = waveletTree.Rank(symbol, range.Start + range.Length) - skip;
 

@@ -48,6 +48,16 @@ namespace Algorithms.Tests
         }
 
         [Fact]
+        public void Should_Find_Pattern3()
+        {
+            const string text = "nooooooooootttttrrrrr,,,,,eeeee,,,,,sssssttttteeeeeeeeeennnn\0hhhhh          hhhhhbbbbbbbbbbuuuuuttttttttttttttt     ooooo     TTTTTtttttiiiii     nnnnn     oooooiiiiieeeeeaaaaaooooo          sssss     qqqqq";
+
+            int actual = new BurrowsWheelerPatternMatcher(text).PatternCount("that");
+
+            actual.ShouldBeEquivalentTo(5);
+        }
+
+        [Fact]
         public void Should_Not_Find_Pattern()
         {
             const string text = "nootr,e,stee\0h  hbbuttt o Tti n oieao  s q";

@@ -47,6 +47,15 @@
   <ItemGroup>
     <Compile Include="BitOperations\BitsSet.cs" />
     <Compile Include="BitOperations\LogBase2.cs" />
+    <Compile Include="Graphs\Cycles\AcyclicityTest.cs" />
+    <Compile Include="Graphs\ArticulationPoints.cs" />
+    <Compile Include="Graphs\Cycles\CycleSearcher.cs" />
+    <Compile Include="Graphs\Cycles\CycleSearcherDFS.cs" />
+    <Compile Include="Graphs\OrientedGraph.cs" />
+    <Compile Include="Graphs\TopologicalSorting\TopologicalSort.cs" />
+    <Compile Include="Graphs\TopologicalSorting\TopologicalSortDFS.cs" />
+    <Compile Include="Graphs\VerticeColor.cs" />
+    <Compile Include="Graphs\VerticeColors.cs" />
     <Compile Include="RangeMinimumQuery\FarachColtonBender\MaskMins.cs" />
     <Compile Include="RangeMinimumQuery\FarachColtonBender\Blocks.cs" />
     <Compile Include="RangeMinimumQuery\FarachColtonBender\PlusMinus1RMQ.cs" />

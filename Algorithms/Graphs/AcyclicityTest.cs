@@ -1,8 +1,8 @@
-﻿namespace Algorithms.Graphs.Cycles
+﻿namespace Algorithms.Graphs
 {
     public static class AcyclicityTest
     {
-        public static bool HasCycles(OrientedGraph graph)
+        public static bool HasCycles(DirectedGraph graph)
         {
             var colors = new VerticeColors(graph.VerticesCount);
 
@@ -20,7 +20,7 @@
             return false;
         }
 
-        private static bool DFS(OrientedGraph graph, int vertice, VerticeColors colors)
+        private static bool DFS(DirectedGraph graph, int vertice, VerticeColors colors)
         {
             colors[vertice] = VerticeColor.Gray;
 

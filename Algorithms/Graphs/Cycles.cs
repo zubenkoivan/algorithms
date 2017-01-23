@@ -1,26 +1,37 @@
-namespace Algorithms.Graphs.Cycles
+namespace Algorithms.Graphs
 {
-    internal class CycleSearcherDFS
+    internal class Cycles
     {
-        private readonly OrientedGraph graph;
+        private readonly DirectedGraph graph;
         private readonly int[] enterTimes;
         private readonly VerticeColors colors;
 
         private int enterTime;
 
-        public CycleSearcherDFS(OrientedGraph graph)
+        public Cycles(DirectedGraph graph)
         {
             this.graph = graph;
             enterTimes = new int[graph.VerticesCount];
             colors = new VerticeColors(graph.VerticesCount);
         }
 
-        public bool IsWhite(int vertice)
+        public int[] Find()
         {
-            return colors[vertice] == VerticeColor.White;
+            var dfs = new Cycles(graph);
+            int[] cycle = null;
+
+            for (int i = 0; i < graph.VerticesCount; ++i)
+            {
+                if (colors[i] == VerticeColor.White && (cycle = dfs.DFS(i)) != null)
+                {
+                    break;
+                }
+            }
+
+            return cycle ?? new int[0];
         }
 
-        public int[] DFS(int vertice)
+        private int[] DFS(int vertice)
         {
             ++enterTime;
             enterTimes[vertice] = enterTime;

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Algorithms.Graphs
 {
-    public class OrientedGraph
+    public class DirectedGraph
     {
         private readonly List<int>[] outEdges;
 
         public readonly int VerticesCount;
 
-        public OrientedGraph(int verticesCount)
+        public DirectedGraph(int verticesCount)
         {
             VerticesCount = verticesCount;
             outEdges = new List<int>[verticesCount];
@@ -38,6 +38,11 @@ namespace Algorithms.Graphs
             {
                 yield return edges[i];
             }
+        }
+
+        public DirectedGraph Invert()
+        {
+            return this;
         }
     }
 }

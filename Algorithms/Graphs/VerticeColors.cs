@@ -16,5 +16,13 @@
             get { return colors[vertice]; }
             set { colors[vertice] = value; }
         }
+
+        public void Reset()
+        {
+            for (int i = 0; i < colors.Length; ++i)
+            {
+                colors[i] = VerticeColor.White;
+            }
+        }
     }
 }

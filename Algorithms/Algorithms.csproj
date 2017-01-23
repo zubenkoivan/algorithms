@@ -47,13 +47,11 @@
   <ItemGroup>
     <Compile Include="BitOperations\BitsSet.cs" />
     <Compile Include="BitOperations\LogBase2.cs" />
-    <Compile Include="Graphs\Cycles\AcyclicityTest.cs" />
-    <Compile Include="Graphs\ArticulationPoints.cs" />
-    <Compile Include="Graphs\Cycles\CycleSearcher.cs" />
-    <Compile Include="Graphs\Cycles\CycleSearcherDFS.cs" />
-    <Compile Include="Graphs\OrientedGraph.cs" />
-    <Compile Include="Graphs\TopologicalSorting\TopologicalSort.cs" />
-    <Compile Include="Graphs\TopologicalSorting\TopologicalSortDFS.cs" />
+    <Compile Include="Graphs\AcyclicityTest.cs" />
+    <Compile Include="Graphs\Cycles.cs" />
+    <Compile Include="Graphs\DirectedGraph.cs" />
+    <Compile Include="Graphs\StronglyConnectedComponents.cs" />
+    <Compile Include="Graphs\TopologicalSort.cs" />
     <Compile Include="Graphs\VerticeColor.cs" />
     <Compile Include="Graphs\VerticeColors.cs" />
     <Compile Include="RangeMinimumQuery\FarachColtonBender\MaskMins.cs" />
@@ -110,7 +108,10 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Graphs\ArticulationPoints\" />
+    <Folder Include="Graphs\EulerianTours\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

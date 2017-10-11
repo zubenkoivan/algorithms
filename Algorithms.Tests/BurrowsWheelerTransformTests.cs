@@ -1,5 +1,6 @@
 ﻿using Algorithms.TextProcessing.BurrowsWheelerTransforms;
 using Algorithms.TextProcessing.BurrowsWheelerTransforms.PatternMatching;
+using Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders;
 using FluentAssertions;
 using Xunit;
 
@@ -12,7 +13,7 @@ namespace Algorithms.Tests
         {
             const string expected = "nootr,e,stee\0h  hbbuttt o Tti n oieao  s q";
 
-            string actual = new BurrowsWheelerTransform(TestData.Text).Result;
+            string actual = new BurrowsWheelerTransform(new KarkkainenSandersConstructor()).Transform(TestData.Text);
 
             actual.ShouldBeEquivalentTo(expected);
         }
@@ -22,7 +23,7 @@ namespace Algorithms.Tests
         {
             const string text = "nootr,e,stee\0h  hbbuttt o Tti n oieao  s q";
 
-            string actual = new BurrowsWheelerInverseTransform(text).Result;
+            string actual = new BurrowsWheelerInverseTransform().Transform(text);
 
             actual.ShouldBeEquivalentTo(TestData.Text);
         }

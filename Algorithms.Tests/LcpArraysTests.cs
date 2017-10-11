@@ -1,4 +1,4 @@
-﻿using Algorithms.TextProcessing.LCPArrays.Kasai;
+﻿using Algorithms.TextProcessing.LCPArrays;
 using FluentAssertions;
 using Xunit;
 
@@ -12,7 +12,7 @@ namespace Algorithms.Tests
             const string text = "abacaba";
             int[] suffixArray = { 6, 4, 0, 2, 5, 1, 3 };
 
-            int[] lcpArray = new KasaiConstructor().Create(text, suffixArray);
+            int[] lcpArray = new KasaiConstructor().Construct(text, suffixArray);
 
             lcpArray.ShouldBeEquivalentTo(new[] { 1, 3, 1, 0, 2, 0 });
         }

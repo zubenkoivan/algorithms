@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Algorithms.TextProcessing.Abstractions;
-using Algorithms.TextProcessing.LCPArrays;
 using Algorithms.TextProcessing.SuffixArrays;
 using Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders;
 using Algorithms.TextProcessing.SuffixArrays.KarpMillerRosenberg;
@@ -24,11 +23,11 @@ namespace Algorithms.Tests
         {
             const string text = "abacaba";
             var suffixArrayConstructor = new Mock<SuffixArrayConstructor>();
-            var lcpArrayConstructor = new Mock<ILCPArrayConstructor>();
+            var lcpArrayConstructor = new Mock<LCPArrayConstructor>();
 
-            suffixArrayConstructor.Setup(x => x.Create(It.IsAny<string>()))
+            suffixArrayConstructor.Setup(x => x.Construct(It.IsAny<string>()))
                 .Returns(new[] { 6, 4, 0, 2, 5, 1, 3 });
-            lcpArrayConstructor.Setup(x => x.Create(It.IsAny<string>(), It.IsAny<int[]>()))
+            lcpArrayConstructor.Setup(x => x.Construct(It.IsAny<string>(), It.IsAny<int[]>()))
                 .Returns(new[] { 1, 3, 1, 0, 2, 0 });
 
             bool actual = new SuffixArray(suffixArrayConstructor.Object, lcpArrayConstructor.Object, text).HasPattern("bacaba");
@@ -39,7 +38,7 @@ namespace Algorithms.Tests
         public void Should_Create_Suffix_Array_Of_Short_Text(SuffixArrayConstructor constructor)
         {
             const string text = "abacaba";
-            int[] actualSuffixArray = constructor.Create(text);
+            int[] actualSuffixArray = constructor.Construct(text);
 
             actualSuffixArray.ShouldBeEquivalentTo(ExpectedSuffixArray(text), config => config.WithStrictOrdering());
         }
@@ -48,7 +47,7 @@ namespace Algorithms.Tests
         public void Should_Create_Suffix_Array_Of_Long_Text(SuffixArrayConstructor constructor)
         {
             const string text = TestData.Text;
-            int[] actualSuffixArray = constructor.Create(text);
+            int[] actualSuffixArray = constructor.Construct(text);
 
             actualSuffixArray.ShouldBeEquivalentTo(ExpectedSuffixArray(text), config => config.WithStrictOrdering());
         }

@@ -1,6 +1,6 @@
 ﻿using Algorithms.RangeMinimumQuery;
+using Algorithms.RangeMinimumQuery.Abstractions;
 using Algorithms.RangeMinimumQuery.FarachColtonBender;
-using Algorithms.RangeMinimumQuery.RMQToLCA;
 using Xunit;
 
 namespace Algorithms.Tests
@@ -70,7 +70,7 @@ namespace Algorithms.Tests
         [Fact]
         public void Should_Find_RMQ_Complex()
         {
-            var rmq = new ComplexRMQ(ArrayLarge);
+            var rmq = new RMQThroughLCA(ArrayLarge);
 
             TestResult testResult = RunTest(rmq, ArrayLarge);
 

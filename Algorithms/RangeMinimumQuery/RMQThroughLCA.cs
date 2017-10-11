@@ -1,17 +1,18 @@
 ﻿using System;
+using Algorithms.RangeMinimumQuery.Abstractions;
 using Algorithms.RangeMinimumQuery.FarachColtonBender;
 using Algorithms.Trees.Cartesian;
 
-namespace Algorithms.RangeMinimumQuery.RMQToLCA
+namespace Algorithms.RangeMinimumQuery
 {
-    public class ComplexRMQ : RMQ
+    public class RMQThroughLCA : RMQ
     {
         private readonly int[] source;
         private readonly int[] firstIndexes;
         private readonly int[] toSourceRanks;
         private readonly PlusMinus1RMQ rmq;
 
-        public ComplexRMQ(int[] source)
+        public RMQThroughLCA(int[] source)
         {
             this.source = source;
             rmq = new PlusMinus1RMQ(CreateEulerTour(source, out firstIndexes, out toSourceRanks));

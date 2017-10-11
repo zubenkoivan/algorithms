@@ -1,4 +1,4 @@
-namespace Algorithms.RangeMinimumQuery
+namespace Algorithms.RangeMinimumQuery.Abstractions
 {
     public abstract class RMQ
     {

@@ -1,11 +1,12 @@
 ﻿using System;
 using Algorithms.Sorting;
+using Algorithms.TextProcessing.Abstractions;
 
 namespace Algorithms.TextProcessing.SuffixArrays.KarpMillerRosenberg
 {
-    public class KarpMillerRosenbergConstructor : ISuffixArrayConstructor
+    public class KarpMillerRosenbergConstructor : SuffixArrayConstructor
     {
-        public int[] Create(string text)
+        public override int[] Construct(string text)
         {
             int textLength = text.Length;
             var labels = new int[textLength];

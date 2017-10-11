@@ -1,20 +1,21 @@
 ﻿using System.Text;
-using Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders;
+using Algorithms.TextProcessing.Abstractions;
 
 namespace Algorithms.TextProcessing.BurrowsWheelerTransforms
 {
-    public class BurrowsWheelerTransform
+    public class BurrowsWheelerTransform : TextTransformer
     {
-        public string Result { get; }
+        private readonly SuffixArrayConstructor suffixArrayConstructor;
 
-        public BurrowsWheelerTransform(string text)
+        public BurrowsWheelerTransform(SuffixArrayConstructor suffixArrayConstructor)
         {
-            Result = Transform(text + char.MinValue);
+            this.suffixArrayConstructor = suffixArrayConstructor;
         }
 
-        private static string Transform(string text)
+        public override string Transform(string text)
         {
-            int[] suffixArray = new KarkkainenSandersConstructor().Create(text);
+            text = text + char.MinValue;
+            int[] suffixArray = suffixArrayConstructor.Construct(text);
             var textBuilder = new StringBuilder(text.Length);
 
             for (int i = 0; i < suffixArray.Length; ++i)

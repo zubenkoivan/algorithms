@@ -1,27 +1,25 @@
 ﻿using Algorithms.Sorting;
+using Algorithms.TextProcessing.Abstractions;
 
 namespace Algorithms.TextProcessing.BurrowsWheelerTransforms
 {
-    public class BurrowsWheelerInverseTransform
+    public class BurrowsWheelerInverseTransform : TextTransformer
     {
-        public string Result { get; }
-
-        public BurrowsWheelerInverseTransform(string transformedText)
+        public override string Transform(string transformedText)
         {
-            int[] firstToLastMap = RestoreFirstToLastMap(transformedText);
+            int[] firstChars = GetFirstChars(transformedText);
             var originalText = new char[transformedText.Length - 1];
-            int j = firstToLastMap[0];
 
-            for (int i = 0; i < originalText.Length; ++i)
+            for (int i = 0, j = firstChars[0]; i < originalText.Length; ++i)
             {
-                j = firstToLastMap[j];
+                j = firstChars[j];
                 originalText[i] = transformedText[j];
             }
 
-            Result = new string(originalText);
+            return new string(originalText);
         }
 
-        private static int[] RestoreFirstToLastMap(string text)
+        private static int[] GetFirstChars(string text)
         {
             var map = new int[text.Length];
 

@@ -1,8 +1,10 @@
-﻿namespace Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders
+﻿using Algorithms.TextProcessing.Abstractions;
+
+namespace Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders
 {
-    public class KarkkainenSandersConstructor : ISuffixArrayConstructor
+    public class KarkkainenSandersConstructor : SuffixArrayConstructor
     {
-        public int[] Create(string text)
+        public override int[] Construct(string text)
         {
             return new KarkkainenSandersSuffixArray(text).SuffixArray;
         }

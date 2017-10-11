@@ -1,4 +1,5 @@
 using System;
+using Algorithms.RangeMinimumQuery.Abstractions;
 
 namespace Algorithms.RangeMinimumQuery.FarachColtonBender
 {

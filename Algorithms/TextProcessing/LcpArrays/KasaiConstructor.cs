@@ -1,10 +1,11 @@
 ﻿using System;
+using Algorithms.TextProcessing.Abstractions;
 
-namespace Algorithms.TextProcessing.LCPArrays.Kasai
+namespace Algorithms.TextProcessing.LCPArrays
 {
-    public class KasaiConstructor : ILCPArrayConstructor
+    public class KasaiConstructor : LCPArrayConstructor
     {
-        public int[] Create(string text, int[] suffixArray)
+        public override int[] Construct(string text, int[] suffixArray)
         {
             var ranks = new int[suffixArray.Length];
 

@@ -35,15 +35,15 @@ namespace Algorithms.Sorting
 
             TElement[] source = array;
             bool canContinue = true;
-            var countingSortContext = new NumbersCounts<TElement>(Base, toInt);
+            var sortContext = new RadixSortContext<TElement>(Base, toInt);
 
             Swap(ref source, ref buffer);
 
             while (canContinue)
             {
                 Swap(ref source, ref buffer);
-                canContinue = CountingSort(source, buffer, length, countingSortContext);
-                countingSortContext.Next();
+                canContinue = CountingSort(source, buffer, length, sortContext);
+                sortContext.NextDigit();
             }
 
             if (source != array)
@@ -60,11 +60,12 @@ namespace Algorithms.Sorting
         }
 
         private static bool CountingSort<TElement>(TElement[] source, TElement[] dest, int length,
-            NumbersCounts<TElement> context)
+            RadixSortContext<TElement> context)
         {
             for (int i = 0; i < length; ++i)
             {
-                ++context.Counts[context.GetNumber(source[i])];
+                int digit = context.GetDigit(source[i]);
+                ++context.Counts[digit];
             }
 
             if (context.Counts[0] == length)
@@ -80,7 +81,7 @@ namespace Algorithms.Sorting
             for (int i = length - 1; i >= 0; --i)
             {
                 TElement element = source[i];
-                int number = context.GetNumber(element);
+                int number = context.GetDigit(element);
                 --context.Counts[number];
                 dest[context.Counts[number]] = element;
             }

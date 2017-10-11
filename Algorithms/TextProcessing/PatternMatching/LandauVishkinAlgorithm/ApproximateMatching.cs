@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Text;
-using Algorithms.RangeMinimumQuery;
-using Algorithms.RangeMinimumQuery.RMQToLCA;
-using Algorithms.TextProcessing.LCPArrays.Kasai;
-using Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders;
+using Algorithms.RangeMinimumQuery.Abstractions;
+using Algorithms.TextProcessing.Abstractions;
 
 namespace Algorithms.TextProcessing.PatternMatching.LandauVishkinAlgorithm
 {
@@ -17,16 +15,18 @@ namespace Algorithms.TextProcessing.PatternMatching.LandauVishkinAlgorithm
         private DiagonalLengths lengths;
         private int[] diagonalOrigins;
 
-        public ApproximateMatching(string text, string pattern)
+        public ApproximateMatching(SuffixArrayConstructor suffixArrayConstructor,
+            LCPArrayConstructor lcpArrayConstructor, RMQConstructor rmqConstructor,
+            string text, string pattern)
         {
             patternLength = pattern.Length;
             diagonals = new Diagonals(text.Length, patternLength);
 
             string combinedText = Combine(text, pattern);
-            int[] suffixArray = new KarkkainenSandersConstructor().Create(combinedText);
-            int[] lcpArray = new KasaiConstructor().Create(combinedText, suffixArray);
+            int[] suffixArray = suffixArrayConstructor.Construct(combinedText);
+            int[] lcpArray = lcpArrayConstructor.Construct(combinedText, suffixArray);
             suffixArrayRanks = CreateRanks(suffixArray);
-            lcpRmq = new ComplexRMQ(lcpArray);
+            lcpRmq = rmqConstructor.Construct(lcpArray);
         }
 
         private static string Combine(string text, string pattern)

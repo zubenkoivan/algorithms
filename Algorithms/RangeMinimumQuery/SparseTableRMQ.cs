@@ -1,5 +1,6 @@
 ﻿using System;
 using Algorithms.BitOperations;
+using Algorithms.RangeMinimumQuery.Abstractions;
 
 namespace Algorithms.RangeMinimumQuery
 {

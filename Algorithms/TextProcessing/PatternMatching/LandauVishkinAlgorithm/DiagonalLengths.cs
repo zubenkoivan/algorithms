@@ -1,4 +1,5 @@
 using Algorithms.RangeMinimumQuery;
+using Algorithms.RangeMinimumQuery.Abstractions;
 
 namespace Algorithms.TextProcessing.PatternMatching.LandauVishkinAlgorithm
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Algorithms.TextProcessing.Abstractions;
 using Algorithms.TextProcessing.LCPArrays;
 using Algorithms.TextProcessing.SuffixArrays;
 using Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders;
@@ -22,7 +23,7 @@ namespace Algorithms.Tests
         public void Should_Find_Index_Of_Pattern()
         {
             const string text = "abacaba";
-            var suffixArrayConstructor = new Mock<ISuffixArrayConstructor>();
+            var suffixArrayConstructor = new Mock<SuffixArrayConstructor>();
             var lcpArrayConstructor = new Mock<ILCPArrayConstructor>();
 
             suffixArrayConstructor.Setup(x => x.Create(It.IsAny<string>()))
@@ -35,7 +36,7 @@ namespace Algorithms.Tests
         }
 
         [Theory, MemberData(nameof(Constructors))]
-        public void Should_Create_Suffix_Array_Of_Short_Text(ISuffixArrayConstructor constructor)
+        public void Should_Create_Suffix_Array_Of_Short_Text(SuffixArrayConstructor constructor)
         {
             const string text = "abacaba";
             int[] actualSuffixArray = constructor.Create(text);
@@ -44,7 +45,7 @@ namespace Algorithms.Tests
         }
 
         [Theory, MemberData(nameof(Constructors))]
-        public void Should_Create_Suffix_Array_Of_Long_Text(ISuffixArrayConstructor constructor)
+        public void Should_Create_Suffix_Array_Of_Long_Text(SuffixArrayConstructor constructor)
         {
             const string text = TestData.Text;
             int[] actualSuffixArray = constructor.Create(text);

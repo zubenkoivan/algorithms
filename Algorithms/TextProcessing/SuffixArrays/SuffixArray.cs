@@ -1,4 +1,4 @@
-﻿using Algorithms.TextProcessing.LCPArrays;
+﻿using Algorithms.TextProcessing.Abstractions;
 
 namespace Algorithms.TextProcessing.SuffixArrays
 {
@@ -8,12 +8,12 @@ namespace Algorithms.TextProcessing.SuffixArrays
         private readonly int[] suffixArray;
         private readonly LCPTree lcpTree;
 
-        public SuffixArray(ISuffixArrayConstructor suffixArrayConstructor, ILCPArrayConstructor ilcpArrayConstructor,
+        public SuffixArray(SuffixArrayConstructor suffixArrayConstructor, LCPArrayConstructor lcpArrayConstructor,
             string text)
         {
             this.text = text;
-            suffixArray = suffixArrayConstructor.Create(text);
-            lcpTree = new LCPTree(ilcpArrayConstructor.Create(text, suffixArray));
+            suffixArray = suffixArrayConstructor.Construct(text);
+            lcpTree = new LCPTree(lcpArrayConstructor.Construct(text, suffixArray));
         }
 
         public bool HasPattern(string pattern)

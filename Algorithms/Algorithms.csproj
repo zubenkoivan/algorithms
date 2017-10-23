@@ -64,7 +64,11 @@
     <Compile Include="RangeMinimumQuery\RMQThroughLCAConstructor.cs" />
     <Compile Include="RangeMinimumQuery\SparseTableRMQ.cs" />
     <Compile Include="RangeMinimumQuery\SparseTableRMQConstructor.cs" />
-    <Compile Include="Sorting\RadixSortContext.cs" />
+    <Compile Include="Sorting\BinaryInsertionSort.cs" />
+    <Compile Include="Sorting\CountingSort.cs" />
+    <Compile Include="Sorting\HeapSort.cs" />
+    <Compile Include="Sorting\InsertionSort.cs" />
+    <Compile Include="Sorting\ShellSort.cs" />
     <Compile Include="TextProcessing\Abstractions\LCPArrayConstructor.cs" />
     <Compile Include="TextProcessing\Abstractions\TextTransformer.cs" />
     <Compile Include="TextProcessing\BurrowsWheelerTransforms\BurrowsWheelerInverseTransform.cs" />
@@ -104,7 +108,7 @@
     <Compile Include="TextProcessing\PatternMatching\ZFunctionAlgorithm\RightBlock.cs" />
     <Compile Include="TextProcessing\PatternMatching\ZFunctionAlgorithm\ZFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SortedArraysMerging\SortedArrays.cs" />
+    <Compile Include="Sorting\Merging\Merging.cs" />
     <Compile Include="Sorting\RadixSort.cs" />
     <Compile Include="Trees\Cartesian\CartesianNode.cs" />
     <Compile Include="Trees\Cartesian\CartesianTree.cs" />

@@ -4,28 +4,26 @@ namespace Algorithms.Sorting
 {
     public static class RadixSort
     {
-        private const int Base = 1000;
-
-        public static void Sort<TElement>(TElement[] array, Func<TElement, int> toInt)
+        public static void Sort<T>(T[] array, Func<T, int> toInt)
         {
-            Sort(array, new TElement[array.Length], array.Length, toInt);
+            Sort(array, new T[array.Length], array.Length, toInt);
         }
 
-        public static void Sort<TElement>(TElement[] array, TElement[] buffer, Func<TElement, int> toInt)
+        public static void Sort<T>(T[] array, T[] buffer, Func<T, int> toInt)
         {
             Sort(array, buffer, array.Length, toInt);
         }
 
-        public static void Sort<TElement>(TElement[] array, TElement[] buffer, int length, Func<TElement, int> toInt)
+        public static void Sort<T>(T[] array, T[] buffer, int length, Func<T, int> toInt)
         {
             if (array.Length < length)
             {
-                throw new ArgumentException($"Array is less than {nameof(length)}({length})", nameof(array));
+                throw new ArgumentException($"{nameof(array)}.Length is less than {nameof(length)}", nameof(array));
             }
 
             if (buffer.Length < length)
             {
-                throw new ArgumentException($"Buffer array is less than {nameof(length)}({length})", nameof(buffer));
+                throw new ArgumentException($"{nameof(buffer)}.Length is less than {nameof(length)}", nameof(buffer));
             }
 
             if (toInt == null)
@@ -33,9 +31,9 @@ namespace Algorithms.Sorting
                 throw new ArgumentNullException(nameof(toInt));
             }
 
-            TElement[] source = array;
+            T[] source = array;
             bool canContinue = true;
-            var sortContext = new RadixSortContext<TElement>(Base, toInt);
+            var sortContext = new Context<T>(toInt);
 
             Swap(ref source, ref buffer);
 
@@ -59,8 +57,8 @@ namespace Algorithms.Sorting
             arg2 = temp;
         }
 
-        private static bool CountingSort<TElement>(TElement[] source, TElement[] dest, int length,
-            RadixSortContext<TElement> context)
+        private static bool CountingSort<T>(T[] source, T[] dest, int length,
+            Context<T> context)
         {
             for (int i = 0; i < length; ++i)
             {
@@ -73,20 +71,47 @@ namespace Algorithms.Sorting
                 return false;
             }
 
-            for (int i = 1; i < Base; ++i)
+            for (int i = 1; i < Context<T>.Base; ++i)
             {
                 context.Counts[i] += context.Counts[i - 1];
             }
 
             for (int i = length - 1; i >= 0; --i)
             {
-                TElement element = source[i];
+                T element = source[i];
                 int number = context.GetDigit(element);
                 --context.Counts[number];
                 dest[context.Counts[number]] = element;
             }
 
             return true;
+        }
+
+        private class Context<T>
+        {
+            public const int Base = 1000;
+
+            private readonly Func<T, int> toInt;
+            private int m;
+            private int n;
+            public readonly int[] Counts;
+
+            public Context(Func<T, int> toInt)
+            {
+                this.toInt = toInt;
+                n = 1;
+                m = Base;
+                Counts = new int[Base];
+            }
+
+            public int GetDigit(T element) => toInt(element) % m / n;
+
+            public void NextDigit()
+            {
+                n = m;
+                m *= Base;
+                Array.Clear(Counts, 0, Base);
+            }
         }
     }
 }

@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
-namespace Algorithms.SortedArraysMerging
+namespace Algorithms.Sorting.Merging
 {
-    public static class SortedArrays
+    public static class Merging
     {
+        [DebuggerStepThrough]
         public static void MergeInPlace<T>(T[] array1, int start1, int length1,
             T[] array2, int start2, int length2)
-            where T : IComparable<T>
         {
-            Comparer<T> comparer = Comparer<T>.Create((x, y) => x.CompareTo(y));
-
-            MergeInPlace(array1, start1, length1, array2, start2, length2, comparer);
+            MergeInPlace(array1, start1, length1, array2, start2, length2, Comparer<T>.Default);
         }
 
         public static void MergeInPlace<T>(T[] array1, int start1, int length1,
@@ -64,19 +63,18 @@ namespace Algorithms.SortedArraysMerging
                     Swap(ref end1, ref end2);
                 }
 
-                int lastLess = FindLastLess(array2[start2], array1, start1, end1, comparer);
+                int lastLess = SearchLastLess(array2[start2], array1, start1, end1, comparer);
 
                 if (lastLess != -1)
                 {
                     int length1 = lastLess - start1 + 1;
-                    int length2 = end2 - start2 + 1;
-
                     Array.Copy(array1, start1, mergeArray, mergeStart, length1);
                     mergeStart += length1;
                     start1 += length1;
 
                     if (lastLess == end1 || comparer.Compare(array1[start1], array2[end2]) >= 0)
                     {
+                        int length2 = end2 - start2 + 1;
                         Array.Copy(array2, start2, mergeArray, mergeStart, length2);
                         mergeStart += length2;
                         break;
@@ -100,50 +98,50 @@ namespace Algorithms.SortedArraysMerging
             arg2 = tmp;
         }
 
-        private static int FindLastLess<T>(T element2, T[] array1, int start1, int end1, IComparer<T> comparer)
+        private static int SearchLastLess<T>(T element, T[] array, int startIndex, int endIndex, IComparer<T> comparer)
         {
-            int element1Index = start1;
-
-            if (comparer.Compare(array1[element1Index], element2) >= 0)
+            if (comparer.Compare(array[startIndex], element) >= 0)
             {
                 return -1;
             }
 
+            int index = startIndex;
+
             do
             {
-                element1Index = Math.Min(2 * element1Index - start1 + 1, end1);
+                index = Math.Min(2 * index - startIndex + 1, endIndex);
 
-                if (comparer.Compare(array1[element1Index], element2) >= 0)
+                if (comparer.Compare(array[index], element) >= 0)
                 {
-                    return BinarySearchLastLess(element2, array1, (element1Index + start1) / 2, element1Index, comparer);
+                    return BinarySearchLastLess(element, array, (index + startIndex) / 2, index, comparer);
                 }
-            } while (element1Index < end1);
+            } while (index < endIndex);
 
-            return end1;
+            return endIndex;
         }
 
-        private static int BinarySearchLastLess<T>(T element2, T[] array1, int start1, int end1, IComparer<T> comparer)
+        private static int BinarySearchLastLess<T>(T element, T[] array, int startIndex, int endIndex, IComparer<T> comparer)
         {
-            if (end1 - start1 == 0)
+            if (endIndex - startIndex == 0)
             {
-                return start1;
+                return startIndex;
             }
 
-            while (end1 - start1 > 1)
+            while (endIndex - startIndex > 1)
             {
-                int middle = (start1 + end1) / 2;
+                int middle = (startIndex + endIndex) / 2;
 
-                if (comparer.Compare(array1[middle], element2) >= 0)
+                if (comparer.Compare(array[middle], element) >= 0) // array[middle] >= element
                 {
-                    end1 = middle;
+                    endIndex = middle - 1;
                 }
                 else
                 {
-                    start1 = middle;
+                    startIndex = middle + 1;
                 }
             }
 
-            return comparer.Compare(array1[start1], element2) >= 0 ? start1 - 1 : start1;
+            return comparer.Compare(array[startIndex], element) >= 0 ? startIndex - 1 : startIndex;
         }
     }
 }

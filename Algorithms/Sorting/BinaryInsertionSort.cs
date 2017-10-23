@@ -33,18 +33,23 @@ namespace Algorithms.Sorting
                     continue;
                 }
 
-                while (end - start > 0)
+                if (comparer.Compare(array[start], element) <= 0)
                 {
-                    int middle = (start + end) / 2;
+                    while (end - start > 1)
+                    {
+                        int middle = (start + end) / 2;
 
-                    if (comparer.Compare(element, array[middle]) < 0)
-                    {
-                        end = middle;
+                        if (comparer.Compare(element, array[middle]) < 0)
+                        {
+                            end = middle;
+                        }
+                        else
+                        {
+                            start = middle;
+                        }
                     }
-                    else
-                    {
-                        start = middle + 1;
-                    }
+
+                    start = end;
                 }
 
                 Array.Copy(array, start, array, start + 1, i - start);

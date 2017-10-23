@@ -58,7 +58,7 @@ namespace Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders
 
             FillSuffixArray2(symbols, ranks01);
 
-            Merging.MergeInPlace(SuffixArray, suffixArray01Start, symbols.Length01,
+            Merging.Merge(SuffixArray, suffixArray01Start, symbols.Length01,
                 suffixArray2, 0, symbols.Length2, Comparer<int>.Create((s01, s2) => Compare(s01, s2, symbols, ranks01)));
         }
 

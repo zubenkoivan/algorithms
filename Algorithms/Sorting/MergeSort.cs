@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Algorithms.BitOperations;
 using Algorithms.Sorting.ArrayMerging;
 
@@ -33,29 +32,16 @@ namespace Algorithms.Sorting
                 {
                     int right = left + size;
                     int rightSize = Math.Min(size, length - right);
-                    Array.Copy(array, left, buffer, 0, size);
-                    Array.Copy(array, right, buffer, size, rightSize);
-                    Merging.MergeInPlace(array, right, rightSize, buffer, 0, size, comparer);
-                    if (!IsSorted(array, left, size << 1, comparer))
-                    {
-                        string a = string.Join(",", buffer.Take(size));
-                        string b = string.Join(",", buffer.Skip(size).Take(size));
-                        string r = string.Join(",", array.Skip(left).Take(size << 1));
-                    }
-                }
-            }
-        }
 
-        private static bool IsSorted<T>(T[] array, int start, int length, IComparer<T> comparer)
-        {
-            for (int i = start + 1; i < start + length; i++)
-            {
-                if (comparer.Compare(array[i - 1], array[i]) > 0)
-                {
-                    return false;
+                    if (comparer.Compare(array[right - 1], array[right]) <= 0)
+                    {
+                        continue;
+                    }
+
+                    Array.Copy(array, left, buffer, 0, size);
+                    Merging.Merge(buffer, 0, size, array, right, rightSize, array, left, comparer);
                 }
             }
-            return true;
         }
     }
 }

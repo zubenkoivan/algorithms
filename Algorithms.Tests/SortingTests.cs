@@ -64,6 +64,17 @@ namespace Algorithms.Tests
         }
 
         [Fact]
+        public void Merge_Sort()
+        {
+            int[] array = GenerateRandomArray();
+            int[] expected = array.OrderBy(x => x).ToArray();
+
+            MergeSort.Sort(array);
+
+            array.ShouldBeEquivalentTo(expected, config => config.WithStrictOrdering());
+        }
+
+        [Fact]
         public void Counting_Sort()
         {
             int[] array = GenerateRandomArray(1000);

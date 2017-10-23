@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Algorithms.Sorting;
-using Algorithms.Sorting.Merging;
+using Algorithms.Sorting.ArrayMerging;
 
 namespace Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders
 {

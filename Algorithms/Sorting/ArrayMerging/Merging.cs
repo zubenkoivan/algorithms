@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Algorithms.Sorting.Merging
+namespace Algorithms.Sorting.ArrayMerging
 {
     public static class Merging
     {
@@ -131,7 +131,7 @@ namespace Algorithms.Sorting.Merging
             {
                 int middle = (startIndex + endIndex) / 2;
 
-                if (comparer.Compare(array[middle], element) >= 0) // array[middle] >= element
+                if (comparer.Compare(array[middle], element) >= 0)
                 {
                     endIndex = middle - 1;
                 }

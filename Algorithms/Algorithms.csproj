@@ -94,7 +94,7 @@
     <Compile Include="TextProcessing\Abstractions\SuffixArrayConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarkkainenSanders\KarkkainenSandersConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarkkainenSanders\KarkkainenSandersSuffixArray.cs" />
-    <Compile Include="TextProcessing\SuffixArrays\KarkkainenSanders\SymbolsCollection.cs" />
+    <Compile Include="TextProcessing\SuffixArrays\KarkkainenSanders\Characters.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarpMillerRosenberg\KarpMillerRosenbergConstructor.cs" />
     <Compile Include="TextProcessing\SuffixArrays\KarpMillerRosenberg\LabelsPair.cs" />
     <Compile Include="TextProcessing\SuffixArrays\LCP.cs" />

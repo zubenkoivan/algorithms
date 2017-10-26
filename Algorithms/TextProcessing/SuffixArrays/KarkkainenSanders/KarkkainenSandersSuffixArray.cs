@@ -20,78 +20,94 @@ namespace Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders
             suffixArray2 = new int[text.Length / 3];
             suffixArray2SortBuffer = new int[text.Length / 3];
 
-            FillSuffixArray(SymbolsCollection.FromText(text));
+            CreateSuffixArray(Characters.FromText(text));
 
             buffer = null;
             suffixArray2 = null;
             suffixArray2SortBuffer = null;
         }
 
-        private void FillSuffixArray(SymbolsCollection symbols)
+        private void CreateSuffixArray(Characters chars)
         {
-            if (symbols.Length < 3)
+            if (chars.Length < 3)
             {
-                CreateSimpleSuffixArray(symbols);
+                CreateSmallestSuffixArray(chars);
                 return;
             }
 
-            int[] labels = SuffixArray;
-            int[] labelIndexes = buffer;
+            CreateOnly01SuffixArray(chars, out bool isSorted);
 
-            if (symbols.MarkTriplesWithLabels(labels, labelIndexes))
+            if (isSorted)
             {
-                Array.Copy(labelIndexes, 0, SuffixArray, SuffixArray.Length - symbols.Length, symbols.Length);
                 return;
             }
 
-            FillSuffixArray(symbols.CreateTriples01(labels, labelIndexes));
+            int[] charRanks = buffer;
 
-            int[] ranks01 = buffer;
-            int suffixArray01Start = SuffixArray.Length - symbols.Length01;
+            CreateOnly2SuffixArray(chars, charRanks);
 
-            for (int i = suffixArray01Start; i < SuffixArray.Length; ++i)
-            {
-                int originalIndex = symbols.FromTriples01Index(SuffixArray[i]);
-                SuffixArray[i] = originalIndex;
-                ranks01[originalIndex] = i;
-            }
-
-            FillSuffixArray2(symbols, ranks01);
-
-            Merging.Merge(SuffixArray, suffixArray01Start, symbols.Length01,
-                suffixArray2, 0, symbols.Length2, Comparer<int>.Create((s01, s2) => Compare(s01, s2, symbols, ranks01)));
+            Merging.Merge(SuffixArray, SuffixArray.Length - chars.Only01Length, chars.Only01Length,
+                suffixArray2, 0, chars.Only2Length,
+                SuffixArray, SuffixArray.Length - chars.Length,
+                Comparer<int>.Create((s01, s2) => Compare(s01, s2, chars, charRanks)));
         }
 
-        private void CreateSimpleSuffixArray(SymbolsCollection symbols)
+        private void CreateOnly01SuffixArray(Characters chars, out bool isSorted)
         {
-            if (symbols.Length == 1)
+            int[] labels = SuffixArray;
+            int[] sortedTriples = buffer;
+
+            chars.AssignLabelsToTriples(labels, sortedTriples);
+            isSorted = labels[labels.Length - 1] == labels.Length - 1;
+
+            if (isSorted)
             {
-                SuffixArray[SuffixArray.Length - 1] = 0;
+                Array.Copy(sortedTriples, 0, SuffixArray, SuffixArray.Length - chars.Length, chars.Length);
+                return;
             }
 
-            if (symbols[0] < symbols[1])
+            CreateSuffixArray(chars.CreateOnly01Triples(labels, sortedTriples));
+        }
+
+        private void CreateSmallestSuffixArray(Characters chars)
+        {
+            if (chars.Length == 1)
+            {
+                SuffixArray[SuffixArray.Length - 1] = 0;
+                return;
+            }
+
+            if (chars[0] >= chars[1])
+            {
+                SuffixArray[SuffixArray.Length - 2] = 1;
+                SuffixArray[SuffixArray.Length - 1] = 0;
+            }
+            else
             {
                 SuffixArray[SuffixArray.Length - 2] = 0;
                 SuffixArray[SuffixArray.Length - 1] = 1;
-                return;
             }
-
-            SuffixArray[SuffixArray.Length - 2] = 1;
-            SuffixArray[SuffixArray.Length - 1] = 0;
         }
 
-        private void FillSuffixArray2(SymbolsCollection symbols, int[] ranks01)
+        private void CreateOnly2SuffixArray(Characters chars, int[] charRanks)
         {
-            for (int i = 2; i < symbols.Length; i += 3)
+            for (int i = SuffixArray.Length - chars.Only01Length; i < SuffixArray.Length; ++i)
+            {
+                int originalIndex = chars.ToOriginalIndex(SuffixArray[i]);
+                SuffixArray[i] = originalIndex;
+                charRanks[originalIndex] = i;
+            }
+
+            for (int i = 2; i < chars.Length; i += 3)
             {
                 suffixArray2[i / 3] = i;
             }
 
-            RadixSort.Sort(suffixArray2, suffixArray2SortBuffer, symbols.Length2, i => ranks01[i + 1]);
-            RadixSort.Sort(suffixArray2, suffixArray2SortBuffer, symbols.Length2, i => symbols[i]);
+            RadixSort.Sort(suffixArray2, suffixArray2SortBuffer, chars.Only2Length, i => charRanks[i + 1]);
+            RadixSort.Sort(suffixArray2, suffixArray2SortBuffer, chars.Only2Length, i => chars[i]);
         }
 
-        private static int Compare(int index01, int index2, SymbolsCollection symbols, int[] ranks01)
+        private static int Compare(int index01, int index2, Characters symbols, int[] ranks01)
         {
             int cmp = symbols[index01].CompareTo(symbols[index2]);
 
@@ -116,6 +132,14 @@ namespace Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders
             }
 
             return -Compare(index2 + 1, index01 + 1, symbols, ranks01);
+        }
+
+        private class Arrays
+        {
+            public int[] SuffixArray;
+            public int[] Buffer;
+            public int[] Only2SuffixArray;
+            public int[] Only2Buffer;
         }
     }
 }

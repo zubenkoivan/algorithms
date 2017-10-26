@@ -1,39 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Algorithms.Sorting.ArrayMerging
 {
     public static class Merging
     {
-        [DebuggerStepThrough]
-        public static void Merge<T>(T[] array1, int start1, int length1,
-            T[] array2, int start2, int length2)
-        {
-            Merge(array1, start1, length1, array2, start2, length2, Comparer<T>.Default);
-        }
-
-        public static void Merge<T>(T[] array1, int start1, int length1,
-            T[] array2, int start2, int length2,
-            IComparer<T> comparer)
-        {
-            if (array1.Length < length1 + length2)
-            {
-                throw new ArgumentException($"{nameof(array1)} will contain result, " +
-                                            $"it must not be less than {nameof(length1)} + {nameof(length2)}");
-            }
-
-            if (start1 < length2)
-            {
-                Array.Copy(array1, start1, array1, length2, length1);
-                start1 = length2;
-            }
-
-            int mergeStart = start1 - length2;
-
-            Merge(array2, start2, length2, array1, start1, length1, array1, mergeStart, comparer);
-        }
-
         public static void Merge<T>(T[] array1, int start1, int length1,
             T[] array2, int start2, int length2,
             T[] mergeArray, int mergeStart)

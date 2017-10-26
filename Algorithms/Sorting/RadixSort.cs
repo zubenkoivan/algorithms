@@ -1,29 +1,43 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Algorithms.Sorting
 {
     public static class RadixSort
     {
+        [DebuggerStepThrough]
         public static void Sort<T>(T[] array, Func<T, int> toInt)
         {
-            Sort(array, new T[array.Length], array.Length, toInt);
+            Sort(array, 0, new T[array.Length], array.Length, toInt);
         }
 
+        [DebuggerStepThrough]
         public static void Sort<T>(T[] array, T[] buffer, Func<T, int> toInt)
         {
-            Sort(array, buffer, array.Length, toInt);
+            Sort(array, 0, buffer, array.Length, toInt);
         }
 
+        [DebuggerStepThrough]
         public static void Sort<T>(T[] array, T[] buffer, int length, Func<T, int> toInt)
         {
-            if (array.Length < length)
+            Sort(array, 0, buffer, length, toInt);
+        }
+
+        public static void Sort<T>(T[] array, int start, T[] buffer, int length, Func<T, int> toInt)
+        {
+            if (start < 0 || start >= array.Length)
             {
-                throw new ArgumentException($"{nameof(array)}.Length is less than {nameof(length)}", nameof(array));
+                throw new IndexOutOfRangeException($"{nameof(start)} is out of range");
+            }
+
+            if (array.Length < start + length)
+            {
+                throw new ArgumentException("is out of range", nameof(length));
             }
 
             if (buffer.Length < length)
             {
-                throw new ArgumentException($"{nameof(buffer)}.Length is less than {nameof(length)}", nameof(buffer));
+                throw new ArgumentException($"is less than {nameof(length)}", nameof(buffer));
             }
 
             if (toInt == null)
@@ -31,86 +45,96 @@ namespace Algorithms.Sorting
                 throw new ArgumentNullException(nameof(toInt));
             }
 
-            T[] source = array;
-            bool canContinue = true;
-            var sortContext = new Context<T>(toInt);
+            SortImpl(array, start, buffer, length, toInt);
+        }
 
-            Swap(ref source, ref buffer);
+        private static void SortImpl<T>(T[] array, int start, T[] buffer, int length, Func<T, int> toInt)
+        {
+            var context = new Context<T>(toInt);
 
-            while (canContinue)
+            while (true)
             {
-                Swap(ref source, ref buffer);
-                canContinue = CountingSort(source, buffer, length, sortContext);
-                sortContext.NextDigit();
-            }
+                CountingSort(context, array, start, buffer, 0, length);
 
-            if (source != array)
-            {
-                Array.Copy(source, array, length);
+                if (context.CanStop)
+                {
+                    Array.Copy(buffer, 0, array, start, length);
+                    return;
+                }
+
+                context.NextDigit();
+                CountingSort(context, buffer, 0, array, start, length);
+
+                if (context.CanStop)
+                {
+                    return;
+                }
+
+                context.NextDigit();
             }
         }
 
-        private static void Swap<T>(ref T arg1, ref T arg2)
+        private static void CountingSort<T>(Context<T> context, T[] source, int sourceStart,
+            T[] dest, int destStart, int length)
         {
-            T temp = arg1;
-            arg1 = arg2;
-            arg2 = temp;
-        }
+            int sourceEnd = sourceStart + length;
 
-        private static bool CountingSort<T>(T[] source, T[] dest, int length,
-            Context<T> context)
-        {
-            for (int i = 0; i < length; ++i)
+            for (int i = sourceStart; i < sourceEnd; ++i)
             {
                 int digit = context.GetDigit(source[i]);
                 ++context.Counts[digit];
             }
 
-            if (context.Counts[0] == length)
-            {
-                return false;
-            }
+            context.SumCounts(length);
 
-            for (int i = 1; i < Context<T>.Base; ++i)
+            for (int i = sourceStart; i < sourceEnd; ++i)
             {
-                context.Counts[i] += context.Counts[i - 1];
+                int digit = context.GetDigit(source[i]);
+                dest[destStart + context.Counts[digit]] = source[i];
+                ++context.Counts[digit];
             }
-
-            for (int i = length - 1; i >= 0; --i)
-            {
-                T element = source[i];
-                int number = context.GetDigit(element);
-                --context.Counts[number];
-                dest[context.Counts[number]] = element;
-            }
-
-            return true;
         }
 
         private class Context<T>
         {
-            public const int Base = 1000;
+            private const int Base = 1000;
 
             private readonly Func<T, int> toInt;
-            private int m;
-            private int n;
-            public readonly int[] Counts;
+            private int m = Base;
+            private int n = 1;
+            private bool canStop = true;
+
+            public readonly int[] Counts = new int[Base];
+
+            public bool CanStop => canStop;
 
             public Context(Func<T, int> toInt)
             {
                 this.toInt = toInt;
-                n = 1;
-                m = Base;
-                Counts = new int[Base];
             }
 
-            public int GetDigit(T element) => toInt(element) % m / n;
+            public int GetDigit(T element)
+            {
+                int number = toInt(element);
+                canStop &= number / m == 0;
+                return number % m / n;
+            }
 
             public void NextDigit()
             {
                 n = m;
                 m *= Base;
-                Array.Clear(Counts, 0, Base);
+                canStop = true;
+                Array.Clear(Counts, 0, Counts.Length);
+            }
+
+            public void SumCounts(int count)
+            {
+                for (int i = Counts.Length - 1; i >= 0; --i)
+                {
+                    count -= Counts[i];
+                    Counts[i] = count;
+                }
             }
         }
     }

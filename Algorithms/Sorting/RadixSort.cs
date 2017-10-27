@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Diagnostics;
 
 namespace Algorithms.Sorting
@@ -50,27 +51,28 @@ namespace Algorithms.Sorting
 
         private static void SortImpl<T>(T[] array, int start, T[] buffer, int length, Func<T, int> toInt)
         {
-            var context = new Context<T>(toInt);
-
-            while (true)
+            using (var context = new Context<T>(toInt))
             {
-                CountingSort(context, array, start, buffer, 0, length);
-
-                if (context.CanStop)
+                while (true)
                 {
-                    Array.Copy(buffer, 0, array, start, length);
-                    return;
+                    CountingSort(context, array, start, buffer, 0, length);
+
+                    if (context.CanStop)
+                    {
+                        Array.Copy(buffer, 0, array, start, length);
+                        return;
+                    }
+
+                    context.NextDigit();
+                    CountingSort(context, buffer, 0, array, start, length);
+
+                    if (context.CanStop)
+                    {
+                        return;
+                    }
+
+                    context.NextDigit();
                 }
-
-                context.NextDigit();
-                CountingSort(context, buffer, 0, array, start, length);
-
-                if (context.CanStop)
-                {
-                    return;
-                }
-
-                context.NextDigit();
             }
         }
 
@@ -95,8 +97,10 @@ namespace Algorithms.Sorting
             }
         }
 
-        private class Context<T>
+        private class Context<T> : IDisposable
         {
+            private static ArrayPool<int> Pool = ArrayPool<int>.Create();
+
             private const int Base = 1000;
 
             private readonly Func<T, int> toInt;
@@ -104,7 +108,7 @@ namespace Algorithms.Sorting
             private int n = 1;
             private bool canStop = true;
 
-            public readonly int[] Counts = new int[Base];
+            public readonly int[] Counts = Pool.Rent(Base);
 
             public bool CanStop => canStop;
 
@@ -135,6 +139,11 @@ namespace Algorithms.Sorting
                     count -= Counts[i];
                     Counts[i] = count;
                 }
+            }
+
+            public void Dispose()
+            {
+                Pool.Return(Counts, true);
             }
         }
     }

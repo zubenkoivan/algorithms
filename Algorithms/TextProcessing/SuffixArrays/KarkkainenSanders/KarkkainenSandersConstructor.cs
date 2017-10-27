@@ -15,7 +15,7 @@ namespace Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders
             return arrays.SuffixArray;
         }
 
-        private void CreateSuffixArray(Arrays arrays, Characters chars)
+        private static void CreateSuffixArray(Arrays arrays, Characters chars)
         {
             if (chars.Length < 3)
             {
@@ -40,7 +40,7 @@ namespace Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders
                 Comparer<int>.Create((s01, s2) => Compare(s01, s2, chars, charRanks)));
         }
 
-        private void CreateOnly01SuffixArray(Arrays arrays, Characters chars, out bool isSorted)
+        private static void CreateOnly01SuffixArray(Arrays arrays, Characters chars, out bool isSorted)
         {
             int[] labels = arrays.SuffixArray;
             int[] sortedTriples = arrays.Buffer;
@@ -58,7 +58,7 @@ namespace Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders
             CreateSuffixArray(arrays, chars.CreateOnly01Triples(labels, sortedTriples));
         }
 
-        private void CreateSmallestSuffixArray(Arrays arrays, Characters chars)
+        private static void CreateSmallestSuffixArray(Arrays arrays, Characters chars)
         {
             if (chars.Length == 1)
             {
@@ -78,13 +78,13 @@ namespace Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders
             }
         }
 
-        private void CreateOnly2SuffixArray(Arrays arrays, Characters chars, int[] charRanks)
+        private static void CreateOnly2SuffixArray(Arrays arrays, Characters chars, int[] char01Ranks)
         {
             for (int i = arrays.SuffixArray.Length - chars.Only01Length; i < arrays.SuffixArray.Length; ++i)
             {
                 int originalIndex = chars.ToOriginalIndex(arrays.SuffixArray[i]);
                 arrays.SuffixArray[i] = originalIndex;
-                charRanks[originalIndex] = i;
+                char01Ranks[originalIndex] = i;
             }
 
             for (int i = 2; i < chars.Length; i += 3)
@@ -92,35 +92,35 @@ namespace Algorithms.TextProcessing.SuffixArrays.KarkkainenSanders
                 arrays.Only2SuffixArray[i / 3] = i;
             }
 
-            RadixSort.Sort(arrays.Only2SuffixArray, arrays.Only2Buffer, chars.Only2Length, i => charRanks[i + 1]);
+            RadixSort.Sort(arrays.Only2SuffixArray, arrays.Only2Buffer, chars.Only2Length, i => char01Ranks[i + 1]);
             RadixSort.Sort(arrays.Only2SuffixArray, arrays.Only2Buffer, chars.Only2Length, i => chars[i]);
         }
 
-        private static int Compare(int index01, int index2, Characters symbols, int[] ranks01)
+        private static int Compare(int suffix01, int suffix2, Characters chars, int[] char01Ranks)
         {
-            int cmp = symbols[index01].CompareTo(symbols[index2]);
+            int cmp = chars[suffix01].CompareTo(chars[suffix2]);
 
             if (cmp != 0)
             {
                 return cmp;
             }
 
-            if (index01 == symbols.Length - 1)
+            if (suffix01 == chars.Length - 1)
             {
                 return -1;
             }
 
-            if (index2 == symbols.Length - 1)
+            if (suffix2 == chars.Length - 1)
             {
                 return 1;
             }
 
-            if (index01 % 3 == 0)
+            if (suffix01 % 3 == 0)
             {
-                return ranks01[index01 + 1] < ranks01[index2 + 1] ? -1 : 1;
+                return char01Ranks[suffix01 + 1] < char01Ranks[suffix2 + 1] ? -1 : 1;
             }
 
-            return -Compare(index2 + 1, index01 + 1, symbols, ranks01);
+            return -Compare(suffix2 + 1, suffix01 + 1, chars, char01Ranks);
         }
 
         private class Arrays

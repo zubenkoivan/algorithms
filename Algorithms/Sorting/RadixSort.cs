@@ -55,18 +55,15 @@ namespace Algorithms.Sorting
             {
                 while (true)
                 {
-                    CountingSort(context, array, start, buffer, 0, length);
-
-                    if (context.CanStop)
+                    if (!CountingSort(context, array, start, buffer, 0, length))
                     {
                         Array.Copy(buffer, 0, array, start, length);
                         return;
                     }
 
                     context.NextDigit();
-                    CountingSort(context, buffer, 0, array, start, length);
 
-                    if (context.CanStop)
+                    if (!CountingSort(context, buffer, 0, array, start, length))
                     {
                         return;
                     }
@@ -76,14 +73,17 @@ namespace Algorithms.Sorting
             }
         }
 
-        private static void CountingSort<T>(Context<T> context, T[] source, int sourceStart,
+        private static bool CountingSort<T>(Context<T> context, T[] source, int sourceStart,
             T[] dest, int destStart, int length)
         {
             int sourceEnd = sourceStart + length;
+            bool canContinue = false;
 
             for (int i = sourceStart; i < sourceEnd; ++i)
             {
-                int digit = context.GetDigit(source[i]);
+                int number = context.ToInt(source[i]);
+                int digit = number % context.M / context.N;
+                canContinue |= number / context.M > 0;
                 ++context.Counts[digit];
             }
 
@@ -91,44 +91,35 @@ namespace Algorithms.Sorting
 
             for (int i = sourceStart; i < sourceEnd; ++i)
             {
-                int digit = context.GetDigit(source[i]);
+                int number = context.ToInt(source[i]);
+                int digit = number % context.M / context.N;
                 dest[destStart + context.Counts[digit]] = source[i];
                 ++context.Counts[digit];
             }
+
+            return canContinue;
         }
 
         private class Context<T> : IDisposable
         {
-            private static ArrayPool<int> Pool = ArrayPool<int>.Create();
-
             private const int Base = 1000;
 
-            private readonly Func<T, int> toInt;
-            private int m = Base;
-            private int n = 1;
-            private bool canStop = true;
+            private static ArrayPool<int> Pool = ArrayPool<int>.Create();
 
             public readonly int[] Counts = Pool.Rent(Base);
-
-            public bool CanStop => canStop;
+            public readonly Func<T, int> ToInt;
+            public int M = Base;
+            public int N = 1;
 
             public Context(Func<T, int> toInt)
             {
-                this.toInt = toInt;
-            }
-
-            public int GetDigit(T element)
-            {
-                int number = toInt(element);
-                canStop &= number / m == 0;
-                return number % m / n;
+                ToInt = toInt;
             }
 
             public void NextDigit()
             {
-                n = m;
-                m *= Base;
-                canStop = true;
+                N = M;
+                M *= Base;
                 Array.Clear(Counts, 0, Counts.Length);
             }
 

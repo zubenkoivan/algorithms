@@ -90,6 +90,7 @@
   <ItemGroup>
     <Compile Include="ApproximatePatternMatchingTests.cs" />
     <Compile Include="BurrowsWheelerTransformTests.cs" />
+    <Compile Include="HuffmanCodeTests.cs" />
     <Compile Include="LCPArraysTests.cs" />
     <Compile Include="LCSTests.cs" />
     <Compile Include="LISTests.cs" />

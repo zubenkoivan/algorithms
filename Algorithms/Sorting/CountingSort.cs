@@ -41,9 +41,9 @@ namespace Algorithms.Sorting
 
             for (int i = startIndex; i <= endIndex; ++i)
             {
-                int index = toInt(array[i]);
-                output[counts[index]] = array[i];
-                ++counts[index];
+                int number = toInt(array[i]);
+                output[counts[number]] = array[i];
+                ++counts[number];
             }
 
             Array.Copy(output, 0, array, startIndex, length);

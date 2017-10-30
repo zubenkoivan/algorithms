@@ -10,37 +10,44 @@ namespace Algorithms.Compression
         {
             int[] freqs = CountFrequencies(data);
             TreeNode[] tree = BuildTree(freqs);
-            TableEntry[] codeTable = BuildCodeTable(tree);
+            Code[] codeTable = BuildCodeTable(tree);
+            byte[] compressedData = Compress(data, freqs, codeTable);
 
-            string result = Metrics(codeTable, freqs);
-
-            return null;
+            return compressedData;
         }
 
-        private static string Metrics(TableEntry[] codeTable, int[] freqs)
+        private static string ResultToString(int[] freqs, Code[] codeTable, byte[] compressedData)
         {
-            string result = "";
+            var result = new StringBuilder();
 
             for (int i = 0; i < codeTable.Length; i++)
             {
-                if (codeTable[i].CodeSize > 0)
+                if (codeTable[i].Length > 0)
                 {
-                    result += $"{(char) i}: {codeTable[i]}\n";
+                    result.AppendLine($"{(char) i}: {codeTable[i]}");
                 }
             }
 
-            result += "\n" + string.Join("", freqs
-                          .Select((x, i) => new {Freq = x, Char = (char) i})
-                          .Where(x => x.Freq > 0)
-                          .Select(x => $"{x.Char};{x.Freq}\n"));
+            result.AppendLine();
+            result.AppendLine(string.Join("", freqs
+                .Select((x, i) => new {Freq = x, Char = (char) i})
+                .Where(x => x.Freq > 0)
+                .Select(x => $"{x.Char};{x.Freq}\n")));
 
             int size = codeTable
-                .Select((x, i) => new {Freq = freqs[i], x.CodeSize})
-                .Sum(x => x.Freq * x.CodeSize);
+                .Select((x, i) => new {Freq = freqs[i], x.Length})
+                .Sum(x => x.Freq * x.Length);
 
-            result += $"\nCompressed data size: {size} bits";
+            result.AppendLine();
+            result.AppendLine($"Compressed data length: {size} bits");
+            result.AppendLine();
 
-            return result;
+            for (int i = 0; i < compressedData.Length; i++)
+            {
+                result.Append(Convert.ToString(compressedData[i], 2).PadLeft(8, '0'));
+            }
+
+            return result.ToString();
         }
 
         private static int[] CountFrequencies(byte[] data)
@@ -141,19 +148,19 @@ namespace Algorithms.Compression
             }
         }
 
-        private static TableEntry[] BuildCodeTable(TreeNode[] tree)
+        private static Code[] BuildCodeTable(TreeNode[] tree)
         {
-            var codeTable = new TableEntry[256];
+            var codeTable = new Code[256];
             var code = new byte[32];
             BuildCodeTable(codeTable, tree, 0, 0, code);
             return codeTable;
         }
 
-        private static void BuildCodeTable(TableEntry[] codeTable, TreeNode[] tree, int node, int codeSize, byte[] code)
+        private static void BuildCodeTable(Code[] codeTable, TreeNode[] tree, int node, int codeSize, byte[] code)
         {
             if (tree[node].IsLeaf)
             {
-                codeTable[tree[node].Value] = new TableEntry(codeSize, code);
+                codeTable[tree[node].Value] = new Code(codeSize, code);
                 return;
             }
 
@@ -171,6 +178,82 @@ namespace Algorithms.Compression
         private static void ResetBit(byte[] code, int bit)
         {
             code[bit >> 3] &= (byte) ~(0b1000_0000 >> (bit & 7));
+        }
+
+        private static byte[] Compress(byte[] data, int[] freqs, Code[] codeTable)
+        {
+            var compressedData = new byte[CompressedDataLength(freqs, codeTable)];
+            int codeBitLength = 0;
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Code code = codeTable[data[i]];
+
+                if (code.Length > 24)
+                {
+                    WriteLongCode(code, compressedData, codeBitLength);
+                }
+                else
+                {
+                    WriteShortCode(code, compressedData, codeBitLength);
+                }
+
+                codeBitLength += code.Length;
+            }
+
+            return compressedData;
+        }
+
+        private static int CompressedDataLength(int[] freqs, Code[] codeTable)
+        {
+            int bitLength = 0;
+
+            for (int i = 0; i < freqs.Length; i++)
+            {
+                bitLength += freqs[i] * codeTable[i].Length;
+            }
+
+            return ((bitLength - 1) >> 3) + 1;
+        }
+
+        private static void WriteLongCode(Code code, byte[] data, int currDataBitLength)
+        {
+            int shift = currDataBitLength & 7;
+            int currDataIndex = currDataBitLength - 1 >> 3;
+
+            for (int i = 0; i < code.Bytes.Length; i++)
+            {
+                int currCode = code.Bytes[i] << (8 - shift);
+                data[currDataIndex] |= (byte) (currCode >> 8);
+                currDataIndex++;
+
+                if (currDataIndex < data.Length)
+                {
+                    data[currDataIndex] = (byte) currCode;
+                }
+            }
+        }
+
+        private static void WriteShortCode(Code code, byte[] data, int currDataBitLength)
+        {
+            int shift = currDataBitLength & 7;
+            int currDataIndex = currDataBitLength >> 3;
+            int bytesCount = ((code.Length - 1) >> 3) + 1;
+            int bytes = code.Byte1 | (code.Byte2 << 8) | (code.Byte3 << 16);
+
+            for (int i = 0; i < bytesCount; i++)
+            {
+                int currCode = (bytes & 0xFF) << (8 - shift);
+                data[currDataIndex] |= (byte) (currCode >> 8);
+                currDataIndex++;
+
+                if (currDataIndex < data.Length)
+                {
+                    data[currDataIndex] = (byte) currCode;
+                }
+
+                bytes >>= 8;
+            }
         }
 
         private struct TreeNode
@@ -200,33 +283,33 @@ namespace Algorithms.Compression
 
             public override string ToString()
             {
-                return Frequency.ToString();
+                return IsLeaf ? $"{(char) Value}: {Frequency}" : $"{Left},{Right}: {Frequency}";
             }
         }
 
-        private struct TableEntry
+        private struct Code
         {
-            public readonly byte CodeSize;
+            public readonly byte Length;
             public readonly byte Byte1;
             public readonly byte Byte2;
             public readonly byte Byte3;
-            public readonly byte[] Code;
+            public readonly byte[] Bytes;
 
-            public TableEntry(int codeSize, byte[] code)
+            public Code(int codeSize, byte[] code)
             {
-                CodeSize = (byte) codeSize;
+                Length = (byte) codeSize;
                 Byte1 = code[0];
                 Byte2 = code[1];
                 Byte3 = code[2];
 
                 if (codeSize > 24)
                 {
-                    Code = new byte[((codeSize - 1) >> 3) + 1];
-                    Array.Copy(code, Code, Code.Length);
+                    Bytes = new byte[((codeSize - 1) >> 3) + 1];
+                    Array.Copy(code, Bytes, Bytes.Length);
                 }
                 else
                 {
-                    Code = null;
+                    Bytes = null;
                 }
             }
 
@@ -234,21 +317,20 @@ namespace Algorithms.Compression
             {
                 var result = new StringBuilder();
 
-                if (CodeSize > 24)
+                if (Length > 24)
                 {
-                    for (int i = 0; i < Code.Length; i++)
+                    for (int i = 0; i < Bytes.Length; i++)
                     {
-                        result.Append(Convert.ToString(Code[i], 2).PadLeft(8, '0'));
+                        result.Append(Convert.ToString(Bytes[i], 2).PadLeft(8, '0'));
                     }
                 }
                 else
                 {
-                    result.AppendFormat(Convert.ToString(Byte1, 2).PadLeft(8, '0'));
-                    result.AppendFormat(Convert.ToString(Byte2, 2).PadLeft(8, '0'));
-                    result.AppendFormat(Convert.ToString(Byte3, 2).PadLeft(8, '0'));
+                    int bytes = (Byte1 << 16) | (Byte2 << 8) | Byte3;
+                    result.AppendFormat(Convert.ToString(bytes, 2).PadLeft(24, '0'));
                 }
 
-                return result.ToString(0, CodeSize);
+                return result.ToString(0, Length);
             }
         }
     }

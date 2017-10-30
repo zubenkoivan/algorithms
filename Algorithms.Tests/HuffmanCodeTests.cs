@@ -9,7 +9,7 @@ namespace Algorithms.Tests
         [Fact]
         public void Should_Compress()
         {
-            HuffmanCode.Compress(Encoding.ASCII.GetBytes(TestData.Text.ToUpperInvariant()));
+            HuffmanCode.Compress(Encoding.ASCII.GetBytes(TestData.Text));
         }
     }
 }

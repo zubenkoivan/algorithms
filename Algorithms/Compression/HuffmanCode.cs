@@ -8,31 +8,55 @@ namespace Algorithms.Compression
     {
         public static byte[] Compress(byte[] data)
         {
-            TreeNode[] tree = BuildTree(data);
+            int[] freqs = CountFrequencies(data);
+            TreeNode[] tree = BuildTree(freqs);
             TableEntry[] codeTable = BuildCodeTable(tree);
 
+            string result = Metrics(codeTable, freqs);
+
+            return null;
+        }
+
+        private static string Metrics(TableEntry[] codeTable, int[] freqs)
+        {
             string result = "";
 
             for (int i = 0; i < codeTable.Length; i++)
             {
                 if (codeTable[i].CodeSize > 0)
                 {
-                    result += $"{(char) i}: {codeTable[i].ToString()}\n";
+                    result += $"{(char) i}: {codeTable[i]}\n";
                 }
             }
 
-            return null;
+            result += "\n" + string.Join("", freqs
+                          .Select((x, i) => new {Freq = x, Char = (char) i})
+                          .Where(x => x.Freq > 0)
+                          .Select(x => $"{x.Char};{x.Freq}\n"));
+
+            int size = codeTable
+                .Select((x, i) => new {Freq = freqs[i], x.CodeSize})
+                .Sum(x => x.Freq * x.CodeSize);
+
+            result += $"\nCompressed data size: {size} bits";
+
+            return result;
         }
 
-        private static TreeNode[] BuildTree(byte[] data)
+        private static int[] CountFrequencies(byte[] data)
         {
-            int[] freqs = CountFrequencies(data);
+            var freqs = new int[256];
 
-            string a = string.Join("\n", freqs
-                .Select((x, i) => new {Freq = x, Char = (char) i})
-                .Where(x => x.Freq > 0)
-                .Select(x => $"{x.Char};{x.Freq}"));
+            for (int i = 0; i < data.Length; i++)
+            {
+                freqs[data[i]]++;
+            }
 
+            return freqs;
+        }
+
+        private static TreeNode[] BuildTree(int[] freqs)
+        {
             TreeNode[] heap = CreateHeap(freqs, out int heapEnd);
 
             for (int i = heap.Length - 2; i > 0; i -= 2)
@@ -49,18 +73,6 @@ namespace Algorithms.Compression
             }
 
             return heap;
-        }
-
-        private static int[] CountFrequencies(byte[] data)
-        {
-            var freqs = new int[256];
-
-            for (int i = 0; i < data.Length; i++)
-            {
-                freqs[data[i]]++;
-            }
-
-            return freqs;
         }
 
         private static TreeNode[] CreateHeap(int[] freqs, out int heapEnd)

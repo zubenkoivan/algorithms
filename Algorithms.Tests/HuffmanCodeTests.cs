@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Algorithms.Compression;
+using Algorithms.Compression.Huffman;
 using Xunit;
 
 namespace Algorithms.Tests

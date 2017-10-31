@@ -47,7 +47,10 @@
   <ItemGroup>
     <Compile Include="BitOperations\BitsSet.cs" />
     <Compile Include="BitOperations\LogBase2.cs" />
-    <Compile Include="Compression\HuffmanCode.cs" />
+    <Compile Include="Compression\Huffman\Code.cs" />
+    <Compile Include="Compression\Huffman\HuffmanCode.cs" />
+    <Compile Include="Compression\Huffman\HuffmanCodeStatistics.cs" />
+    <Compile Include="Compression\Huffman\TreeNode.cs" />
     <Compile Include="Graphs\AcyclicityTest.cs" />
     <Compile Include="Graphs\Cycles.cs" />
     <Compile Include="Graphs\DirectedGraph.cs" />
